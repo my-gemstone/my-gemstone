@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stone Journal</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1f1b16">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Stones">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Lora:ital@0;1&display=swap">
+<style>
+:root{--bg:#f1e9df;--paper:#f9f6f1;--ink:#1f1b16;--soft:#6b6358;--gold:#a98a4f;--tint:#efe6d8;--bar:#1f1b16;--barink:#f9f6f1;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14110e;--paper:#1c1915;--ink:#f1ebe0;--soft:#a89f90;--gold:#c4a265;--tint:#26221d;--bar:#0e0c0a;--barink:#f1ebe0}}
+:root[data-theme="dark"]{--bg:#14110e;--paper:#1c1915;--ink:#f1ebe0;--soft:#a89f90;--gold:#c4a265;--tint:#26221d;--bar:#0e0c0a;--barink:#f1ebe0}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Lato,sans-serif}
+.frame{max-width:460px;margin:14px auto 90px;padding:6px;border:1px solid var(--gold);background:var(--bg)}
+.in{border:1px solid var(--gold);background:var(--paper);padding:22px 20px 26px}
+.serif{font-family:Lora,Georgia,serif}
+.cap{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.med{width:76px;height:76px;border-radius:50%;border:1px solid var(--gold);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;background:var(--tint)}
+h1{font-family:Lora,serif;font-weight:400;font-size:40px;text-align:center;margin:6px 0 0}
+.sub{font-family:Lora,serif;font-style:italic;text-align:center;color:var(--soft);font-size:17px;margin:2px 0 14px}
+.rule{display:flex;align-items:center;gap:12px;margin:0 0 16px}.rule i{flex:1;height:1px;background:var(--gold)}.rule b{width:9px;height:9px;background:var(--gold);transform:rotate(45deg)}
+input,select,textarea{width:100%;font:italic 16px Lora,serif;color:var(--ink);background:var(--paper);border:1px solid var(--gold);padding:11px 12px;border-radius:0;margin:0}
+select{font-style:normal;font-family:Lato,sans-serif}
+textarea{min-height:76px;font-style:normal}
+button{font:700 13px Lato,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);padding:11px 14px;border-radius:0;cursor:pointer}
+button.on{background:var(--ink);color:var(--paper)}button.gold{border-color:var(--gold)}
+.row{display:flex;gap:8px;margin:0 0 12px}.row>*{flex:1}.scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}.scroll button{flex:none;padding:8px 12px}
+.sw{width:30px;height:30px;border-radius:50%;border:2px solid var(--paper);outline:1px solid var(--gold);flex:none;padding:0}.sw.sel{outline:2px solid var(--ink)}
+.note{background:var(--tint);border:1px solid var(--gold);padding:14px;margin:0 0 14px;font-family:Lora,serif;font-style:italic;color:var(--soft)}
+.note button{display:block;margin-top:10px;font-style:normal}
+.card{border:1px solid var(--gold);padding:8px;display:flex;gap:12px;align-items:center;margin-bottom:10px;cursor:pointer}
+.card .chip{width:56px;height:56px;flex:none}
+.card h3{font:400 20px Lora,serif;margin:0}.card p{margin:2px 0 0;font:italic 14px Lora,serif;color:var(--soft)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid .card{display:block}.grid .chip{width:100%;height:70px;margin-bottom:6px}
+.tag{display:inline-block;border:1px solid var(--gold);padding:4px 9px;margin:0 6px 6px 0;font-size:13px}
+.lbl{display:block;margin:14px 0 5px}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--bar);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs button{flex:1;border:0;background:none;color:#b9b2a6;padding:18px 0;letter-spacing:.2em;font-size:15px}.tabs button.on{color:var(--barink);box-shadow:inset 0 -4px 0 var(--gold)}
+.hero{height:150px;margin-bottom:14px}.tile{border:1px solid var(--gold);padding:10px 12px;background:var(--paper)}.soft{color:var(--soft);font-size:13px}.tile b{font:700 15px Lato,sans-serif;word-break:break-word}.p{font:17px/1.6 Lora,serif;margin:0 0 8px}
+a.l{color:var(--gold);cursor:pointer;text-decoration:underline}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.card:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="frame"><div class="in" id="app"></div></div>
+<div class="tabs"><button id="t-index" onclick="go('index')">Index</button><button id="t-add" onclick="go('add')">Add</button><button id="t-data" onclick="go('data')">Data</button></div>
+<script>
+var K='stonejournal.v1',S={stones:[],last:null,init:0},V='index',cur=null,editId=null,del=null,F={q:'',st:'all',it:'',co:'',sort:'az',grid:true};
+var COL={purple:'#7a5c8a',pink:'#d9a5a0',white:'#e8e2d6',black:'#2a2724',yellow:'#d8b04a',blue:'#3a4f7a',green:'#4a7a5a',orange:'#d17a3a',brown:'#7a5535',red:'#a8433a',lilac:'#b9a3d8',grey:'#8a8780'};
+var INT=['Calm','Love','Protection','Focus','Abundance','Courage','Sleep','Healing'];
+function mk(n,t,c,i,m,p){return{id:'s'+n.toLowerCase().replace(/\W/g,''),name:n,type:t,color:c,status:'want',intents:i,meaning:m,origin:'',pairs:p,note:'',where:'',price:'',size:'',chakra:'',hardness:'',cleanse:''}}
+var SEED=[mk('Amethyst','Quartz','purple',['Calm','Sleep'],'Soothes a busy mind and supports restful sleep and intuition.',['Clear quartz','Moonstone']),
+mk('Rose quartz','Quartz','pink',['Love','Healing'],'Gentle heart stone for self-love, kindness and forgiveness.',['Amethyst']),
+mk('Clear quartz','Quartz','white',['Focus','Healing'],'Amplifies intention and clarity; pairs with almost anything.',['Amethyst','Citrine']),
+mk('Black tourmaline','Tourmaline','black',['Protection'],'Grounding shield against negative energy and stress.',['Obsidian']),
+mk('Citrine','Quartz','yellow',['Abundance','Courage'],'Sunny stone for confidence, motivation and prosperity.',['Clear quartz','Carnelian']),
+mk('Lapis lazuli','Lazurite','blue',['Focus','Calm'],'Stone of truth and clear communication.',['Clear quartz']),
+mk('Malachite','Copper carbonate','green',['Healing','Courage'],'Strong transformation stone; encourages change and honesty.',['Green aventurine']),
+mk('Moonstone','Feldspar','white',['Calm','Sleep'],'Soft stone for new beginnings, cycles and emotional balance.',['Amethyst']),
+mk('Carnelian','Chalcedony','orange',['Courage','Abundance'],'Warm stone for vitality, creativity and action.',['Citrine']),
+mk('Green aventurine','Quartz','green',['Abundance','Healing'],'Luck and opportunity; calms the heart.',['Malachite','Rose quartz']),
+mk('Obsidian','Volcanic glass','black',['Protection'],'Truth-revealing, protective volcanic glass.',['Black tourmaline']),
+mk('Tiger\u2019s eye','Quartz','brown',['Courage','Focus','Abundance'],'Grounded confidence and good decisions.',['Citrine'])];
+try{var r=localStorage.getItem(K);if(r)S=JSON.parse(r)}catch(e){}
+if(!S.init){S.stones=SEED;S.init=1;sv()}
+var PR={'Amethyst':['Third eye, Crown','7','Smoke or moonlight; long sun can fade it'],'Rose quartz':['Heart','7','Moonlight or sound; long sun can fade it'],'Clear quartz':['Crown, all chakras','7','Water, smoke or moonlight'],'Black tourmaline':['Root','7','Smoke, earth or sound'],'Citrine':['Solar plexus','7','Smoke or moonlight'],'Lapis lazuli':['Throat, Third eye','5 to 6','Smoke or moonlight; avoid water and harsh chemicals'],'Malachite':['Heart','3.5 to 4','Smoke or moonlight; avoid water'],'Moonstone':['Crown, Third eye','6 to 6.5','Moonlight or smoke'],'Carnelian':['Sacral','6.5 to 7','Water, smoke or sunlight'],'Green aventurine':['Heart','6.5 to 7','Water, smoke or moonlight'],'Obsidian':['Root','5 to 5.5','Smoke or earth; brittle, handle with care'],'Tiger\u2019s eye':['Solar plexus, Sacral','6.5 to 7','Smoke or earth']};
+S.stones.forEach(function(s){var p=PR[s.name];if(p&&!s.chakra&&!s.hardness&&!s.cleanse){s.chakra=p[0];s.hardness=p[1];s.cleanse=p[2]}});
+var PX={'Amethyst':'Gem,Quartz variety|Vitreous|White|SiO2|purple,lilac,white','Rose quartz':'Gem,Quartz variety|Vitreous|White|SiO2|pink,white','Clear quartz':'Mineral,Quartz|Vitreous|White|SiO2|white','Black tourmaline':'Mineral,Tourmaline|Vitreous|Colorless|Borosilicate|black','Citrine':'Gem,Quartz variety|Vitreous|White|SiO2|yellow,orange','Lapis lazuli':'Rock,Lazurite-rich|Vitreous to dull|Light blue|Complex (lazurite)|blue','Malachite':'Mineral,Copper carbonate|Silky to vitreous|Light green|Cu2CO3(OH)2|green','Moonstone':'Gem,Feldspar variety|Vitreous to pearly|White|KAlSi3O8|white,blue','Carnelian':'Gem,Chalcedony variety|Waxy to vitreous|White|SiO2|orange,red,brown','Green aventurine':'Gem,Quartz variety|Vitreous|White|SiO2|green','Obsidian':'Rock,Volcanic glass|Vitreous|White|Mostly SiO2|black','Tiger\u2019s eye':'Gem,Quartz variety|Silky|White|SiO2|brown,yellow','Labradorite':'Gem,Feldspar variety|Vitreous to pearly|White|(Ca,Na)(Al,Si)4O8|grey,blue','Selenite':'Mineral,Gypsum variety|Vitreous to pearly|White|CaSO4·2H2O|white','Smoky quartz':'Gem,Quartz variety|Vitreous|White|SiO2|brown,grey','Fluorite':'Mineral,Fluorite|Vitreous|White|CaF2|purple,green,blue','Sodalite':'Mineral,Sodalite|Vitreous to greasy|White|Na8Al6Si6O24Cl2|blue,white','Aquamarine':'Gem,Beryl variety|Vitreous|White|Be3Al2Si6O18|blue','Amazonite':'Gem,Feldspar variety|Vitreous to pearly|White|KAlSi3O8|green,blue','Jade':'Gem,Jadeite or nephrite|Vitreous to greasy|White|NaAlSi2O6|green,white','Turquoise':'Gem,Phosphate|Waxy|Pale blue-green|CuAl6(PO4)4(OH)8·4H2O|blue,green','Garnet':'Gem,Garnet group|Vitreous|White|Silicate (varies)|red','Ruby':'Gem,Corundum variety|Vitreous|White|Al2O3|red','Red jasper':'Mineral,Quartz variety|Dull to waxy|White|SiO2|red','Bloodstone':'Gem,Chalcedony variety|Waxy|White|SiO2|green,red','Peridot':'Gem,Olivine variety|Vitreous|White|(Mg,Fe)2SiO4|green','Emerald':'Gem,Beryl variety|Vitreous|White|Be3Al2Si6O18|green','Sapphire':'Gem,Corundum variety|Vitreous|White|Al2O3|blue','Blue lace agate':'Gem,Chalcedony variety|Waxy|White|SiO2|blue,white','Moss agate':'Gem,Chalcedony variety|Waxy|White|SiO2|green,white','Banded agate':'Gem,Chalcedony variety|Waxy|White|SiO2|brown,grey,white','Howlite':'Mineral,Borate|Vitreous to dull|White|Ca2B5SiO9(OH)5|white','Opal':'Gem,Hydrated silica|Vitreous to waxy|White|SiO2·nH2O|white,blue','Rhodonite':'Mineral,Silicate|Vitreous|White|MnSiO3|pink,red','Rhodochrosite':'Mineral,Carbonate|Vitreous to pearly|White|MnCO3|pink,red','Kunzite':'Gem,Spodumene variety|Vitreous|White|LiAlSi2O6|pink,lilac','Morganite':'Gem,Beryl variety|Vitreous|White|Be3Al2Si6O18|pink,orange','Sunstone':'Gem,Feldspar variety|Vitreous|White|Feldspar (varies)|orange,red','Yellow jasper':'Mineral,Quartz variety|Dull to waxy|White|SiO2|yellow,brown','Pyrite':'Mineral,Iron sulfide|Metallic|Greenish black|FeS2|yellow','Amber':'Organic,Fossil resin|Resinous|White|Organic resin|orange,yellow','Hematite':'Mineral,Iron oxide|Metallic|Reddish brown|Fe2O3|grey,black','Jet':'Organic,Fossil wood|Waxy to dull|Brown to black|Carbon-rich|black','Onyx':'Gem,Chalcedony variety|Waxy|White|SiO2|black,white','Shungite':'Rock,Carbon|Dull to metallic|Black|Mostly carbon|black','Snowflake obsidian':'Rock,Volcanic glass|Vitreous|White|Mostly SiO2|black,grey','Apache tear':'Rock,Volcanic glass|Vitreous|White|Mostly SiO2|black','Kyanite':'Mineral,Silicate|Vitreous to pearly|White|Al2SiO5|blue,white','Larimar':'Gem,Pectolite variety|Vitreous to silky|White|NaCa2Si3O8(OH)|blue,white','Celestite':'Mineral,Sulfate|Vitreous|White|SrSO4|blue,white','Iolite':'Gem,Cordierite variety|Vitreous|White|Mg2Al4Si5O18|blue,lilac','Charoite':'Mineral,Silicate|Vitreous to pearly|White|Silicate (complex)|purple,lilac','Sugilite':'Mineral,Silicate|Vitreous to waxy|White|Silicate (complex)|purple,pink','Lepidolite':'Mineral,Lithium mica|Pearly to vitreous|White|Lithium mica|lilac,pink,grey','Prehnite':'Mineral,Silicate|Vitreous to pearly|White|Ca2Al2Si3O10(OH)2|green,yellow','Unakite':'Rock,Granite variety|Vitreous|White|Epidote and feldspar|green,pink','Ametrine':'Gem,Quartz variety|Vitreous|White|SiO2|purple,yellow','Rutilated quartz':'Gem,Quartz variety|Vitreous|White|SiO2|yellow,brown','Tanzanite':'Gem,Zoisite variety|Vitreous|White|Ca2Al3Si3O12(OH)|blue,purple','Angelite':'Mineral,Anhydrite|Vitreous to pearly|White|CaSO4|blue'};
+function px(s){var p=PX[s.name];if(!p)return;var a=p.split('|');if(!s.tags||!s.tags.length)s.tags=a[0].split(',');if(!s.luster)s.luster=a[1];if(!s.streak)s.streak=a[2];if(!s.formula)s.formula=a[3];if(!s.colors||!s.colors.length)s.colors=a[4].split(',')}
+S.stones.forEach(px);sv();
+function sv(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+var LIB='Labradorite|Feldspar|blue|Protection,Calm|Shields the aura and sparks intuition and change.|Moonstone,Black tourmaline|Third eye, Throat|6 to 6.5|Moonlight or smoke~Selenite|Gypsum|white|Calm,Healing|Clears stagnant energy and brings peace.|Clear quartz|Crown|2|Smoke or sound; never water~Smoky quartz|Quartz|brown|Protection,Calm|Grounds and releases stress and heavy thoughts.|Black tourmaline,Citrine|Root|7|Water, smoke or earth~Fluorite|Fluorite|purple|Focus,Calm|Clears mental fog and aids concentration.|Clear quartz,Amethyst|Third eye, Crown|4|Smoke or moonlight; avoid water and sun~Sodalite|Sodalite|blue|Calm,Focus|Calm logic and clear self-expression.|Lapis lazuli|Throat|5 to 6|Smoke or moonlight~Aquamarine|Beryl|blue|Calm,Courage|Soothes fear and eases communication.|Moonstone|Throat|7.5 to 8|Water or moonlight~Amazonite|Feldspar|green|Calm,Courage|Calms worry and supports speaking your truth.|Rose quartz|Heart, Throat|6 to 6.5|Smoke or moonlight~Jade|Jadeite|green|Abundance,Healing|Luck, harmony and balance.|Green aventurine|Heart|6 to 7|Water, smoke or moonlight~Turquoise|Phosphate|blue|Protection,Healing|Traditional protective stone for travel and wellbeing.|Lapis lazuli|Throat|5 to 6|Smoke; avoid water and perfumes~Garnet|Garnet|red|Courage,Love|Vitality, passion and commitment.|Carnelian|Root|6.5 to 7.5|Water, smoke or moonlight~Ruby|Corundum|red|Courage,Love|Energy, drive and heart strength.|Garnet|Root, Heart|9|Water or moonlight~Red jasper|Jasper|red|Courage,Protection|Stamina and grounding.|Carnelian|Root|6.5 to 7|Water, smoke or earth~Bloodstone|Chalcedony|green|Courage,Healing|Strength and physical resilience.|Red jasper|Root, Heart|6.5 to 7|Water, smoke or sunlight~Peridot|Olivine|green|Abundance,Healing|Renewal, release of envy and fresh starts.|Citrine|Heart, Solar plexus|6.5 to 7|Smoke or moonlight~Emerald|Beryl|green|Love,Healing|Heart healing, loyalty and growth.|Rose quartz|Heart|7.5 to 8|Moonlight or smoke; avoid water~Sapphire|Corundum|blue|Focus,Calm|Clarity, wisdom and inner peace.|Lapis lazuli|Throat, Third eye|9|Water or moonlight~Blue lace agate|Agate|blue|Calm|Gentle calm for speech and anxious moments.|Amazonite|Throat|6.5 to 7|Water or moonlight~Moss agate|Agate|green|Abundance,Healing|Growth, patience and a link with nature.|Green aventurine|Heart|6.5 to 7|Water, earth or moonlight~Banded agate|Agate|brown|Protection,Calm|Steady grounding and stability.|Smoky quartz|Root|6.5 to 7|Water or smoke~Howlite|Borate|white|Calm,Sleep|Quiets the mind and eases insomnia.|Amethyst|Crown|3.5|Smoke or moonlight; avoid water~Opal|Hydrated silica|white|Love,Healing|Creativity, emotion and hope.|Moonstone|Crown|5.5 to 6.5|Smoke or moonlight; avoid heat~Rhodonite|Silicate|pink|Love,Healing|Emotional balance and compassion.|Rose quartz|Heart|5.5 to 6.5|Smoke or moonlight~Rhodochrosite|Carbonate|pink|Love,Healing|Self-love and gentle emotional healing.|Rose quartz|Heart|3.5 to 4|Smoke or moonlight; avoid water~Kunzite|Spodumene|pink|Love,Calm|Soft heart calm and openness.|Rose quartz|Heart|6.5 to 7|Moonlight or smoke; fades in sun~Morganite|Beryl|pink|Love,Healing|Compassion and gentle romance.|Rose quartz|Heart|7.5 to 8|Moonlight or smoke~Sunstone|Feldspar|orange|Abundance,Courage|Joy, optimism and leadership.|Citrine|Sacral, Solar plexus|6 to 6.5|Sunlight or smoke~Yellow jasper|Jasper|yellow|Protection,Courage|Steady confidence and protection.|Citrine|Solar plexus|6.5 to 7|Water or smoke~Pyrite|Iron sulfide|yellow|Abundance,Courage|Confidence and prosperity.|Citrine|Solar plexus|6 to 6.5|Smoke or earth; avoid water~Amber|Fossil resin|orange|Healing,Calm|Warmth and renewal.|Citrine|Solar plexus|2 to 2.5|Smoke or moonlight; avoid water and heat~Hematite|Iron oxide|black|Protection,Focus|Grounding and focus.|Black tourmaline|Root|5 to 6|Smoke or earth; avoid water~Jet|Fossil wood|black|Protection,Calm|Traditional mourning and protection stone.|Obsidian|Root|2.5 to 4|Smoke; avoid water~Onyx|Chalcedony|black|Protection,Courage|Strength and self-control.|Obsidian|Root|6.5 to 7|Water, smoke or earth~Shungite|Carbon|black|Protection,Healing|Purifying stone for cleansing energy.|Black tourmaline|Root|3.5 to 4|Smoke or sunlight; avoid water~Snowflake obsidian|Volcanic glass|black|Calm,Protection|Balance of light and dark.|Obsidian|Root|5 to 5.5|Smoke or earth~Apache tear|Volcanic glass|black|Healing,Calm|Comfort in grief.|Obsidian|Root|5 to 5.5|Smoke or earth~Kyanite|Silicate|blue|Calm,Focus|Alignment and clear communication.|Selenite|Throat, Third eye|4.5 to 7|Smoke or sound; avoid water~Larimar|Pectolite|blue|Calm,Healing|Ocean calm and emotional soothing.|Aquamarine|Throat, Heart|4.5 to 5|Moonlight; avoid sun and long water~Celestite|Strontium sulfate|blue|Calm,Sleep|Peaceful rest and gentle dreams.|Selenite|Throat, Crown|3 to 3.5|Smoke or sound; avoid water~Iolite|Cordierite|purple|Focus,Calm|Insight and vision.|Amethyst|Third eye|7 to 7.5|Smoke or moonlight~Charoite|Silicate|purple|Calm,Healing|Release of fear and transformation.|Amethyst|Third eye, Crown|5 to 6|Smoke or moonlight~Sugilite|Silicate|purple|Healing,Protection|Spiritual love and protection.|Amethyst|Crown|5.5 to 6.5|Smoke or moonlight~Lepidolite|Mica|purple|Calm,Sleep|Calms anxious thoughts.|Amethyst|Third eye, Crown|2.5 to 4|Smoke or moonlight; avoid water~Prehnite|Silicate|green|Calm,Healing|Inner peace and unconditional love.|Green aventurine|Heart|6 to 6.5|Moonlight or smoke~Unakite|Epidote|green|Healing,Love|Emotional balance and patience.|Rose quartz|Heart|6 to 7|Water or smoke~Ametrine|Quartz|purple|Focus,Calm|Mix of calm and drive.|Amethyst,Citrine|Solar plexus, Third eye|7|Smoke or moonlight~Rutilated quartz|Quartz|yellow|Focus,Abundance|Amplifies energy and clarity.|Clear quartz|Crown|7|Water, smoke or moonlight~Tanzanite|Zoisite|blue|Calm,Focus|Intuition and calm insight.|Amethyst|Third eye, Throat|6.5 to 7|Smoke or moonlight~Angelite|Anhydrite|blue|Calm,Sleep|Gentle calm and peaceful rest.|Selenite|Throat|3.5|Smoke or moonlight; avoid water';
+var LB=LIB.split('~').map(function(l){var a=l.split('|');return{name:a[0],type:a[1],color:a[2],intents:a[3].split(','),meaning:a[4],pairs:a[5].split(','),chakra:a[6],hardness:a[7],cleanse:a[8]}});
+LB.forEach(px);
+function sg(v){var b=$('f-sg');if(!b)return;var q=v.trim().toLowerCase();if(!q){b.innerHTML='';return}var m=LB.filter(function(x){return x.name.toLowerCase().indexOf(q)>=0&&!find(x.name)}).slice(0,5);b.innerHTML=m.map(function(x){return '<button type="button" class="gold" style="margin:6px 6px 0 0;padding:8px 12px" onclick="fillS('+LB.indexOf(x)+')">'+x.name+'</button>'}).join('')+(m.length?'<p class="sub" style="text-align:left;margin:6px 0 0;font-size:14px">Tap a match to fill in the details</p>':'')}
+function fillS(i){var x=LB[i];$('f-name').value=x.name;$('f-type').value=x.type;$('f-me').value=x.meaning;$('f-pa').value=x.pairs.join(', ');$('f-ch').value=x.chakra;$('f-ha').value=x.hardness;$('f-cl').value=x.cleanse;FI=x.intents.slice();var bs=$('f-in').children;for(var k=0;k<bs.length;k++)bs[k].className=FI.indexOf(bs[k].textContent)>=0?'on':'';$('f-ta').value=(x.tags||[]).join(', ');$('f-lu').value=x.luster||'';$('f-sk').value=x.streak||'';$('f-fo').value=x.formula||'';FC=(x.colors||[x.color]).slice();var cs=$('f-cc').children;for(var j=0;j<cs.length;j++)cs[j].className=FC.indexOf(cs[j].textContent.toLowerCase())>=0?'on':'';$('f-sg').innerHTML=''}
+function cl(s){return s.colors&&s.colors.length?s.colors:[s.color||'grey']}
+function bg(s){var a=cl(s).map(function(c){return COL[c]||'#888'});return a.length>1?'linear-gradient(135deg,'+a.join(',')+')':a[0]}
+function cap(c){return c.charAt(0).toUpperCase()+c.slice(1)}
+function fm(t){return esc(t).replace(/([A-Za-z)])(\d+)/g,'$1<sub>$2</sub>')}
+function hb(v){var m=String(v||'').match(/[\d.]+/g);if(!m)return '';var t=Math.round(parseFloat(m[m.length-1])),o='';for(var i=1;i<=10;i++)o+='<i style="flex:1;height:8px;border-radius:4px;background:'+(i<=t?'var(--gold)':'rgba(128,128,128,.25)')+'"></i>';return '<div class="tile" style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;align-items:center"><span class="soft">Hardness (Mohs scale)</span><b class="serif" style="font-size:24px">'+esc(v)+'</b></div><div style="display:flex;gap:4px;margin-top:8px">'+o+'</div></div>'}
+function tiles(s){var a=[['Luster',s.luster],['Streak',s.streak],['Formula',s.formula]].filter(function(x){return x[1]});return a.length?'<div style="display:flex;gap:8px;flex-wrap:wrap">'+a.map(function(x){return '<div class="tile" style="flex:1 1 90px"><div class="soft">'+x[0]+'</div><b>'+fm(x[1])+'</b></div>'}).join('')+'</div>':''}
+function dots(s){return '<div style="display:flex;gap:14px;flex-wrap:wrap">'+cl(s).map(function(c){return '<div style="text-align:center"><div style="width:38px;height:38px;border-radius:50%;background:'+(COL[c]||'#888')+';outline:1px solid var(--gold);outline-offset:2px;margin:0 auto 6px"></div><span class="soft">'+cap(c)+'</span></div>'}).join('')+'</div>'}
+function tc(b,c){var k=FC.indexOf(c);if(k>=0)FC.splice(k,1);else FC.push(c);b.className=k>=0?'':'on'}
+function dl(id,k,x){var a=(x||[]).slice();S.stones.forEach(function(s){if(s[k]&&a.indexOf(s[k])<0)a.push(s[k])});return '<datalist id="'+id+'">'+a.map(function(v){return '<option value="'+esc(v)+'">'}).join('')+'</datalist>'}
+function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function $(i){return document.getElementById(i)}
+function chip(s,c){return '<div class="chip" style="background:'+bg(s)+'"></div>'}
+function go(v){V=v;editId=v==='add'?null:editId;del=null;draw();scrollTo(0,0)}
+function head(){var w=S.stones.filter(function(s){return s.status==='want'}).length;
+return '<div class="med"><svg width="42" height="42" viewBox="0 0 28 28"><polygon points="14,3 24,10 20,24 8,24 4,10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 10 L14 14 L24 10 M14 3 L8 24 M14 14 L20 24" fill="none" stroke="currentColor" stroke-width="1"/></svg></div><div class="cap" style="text-align:center">Stone Journal</div><h1>'+S.stones.length+' stones</h1><p class="sub">'+(S.stones.length-w)+' owned, '+w+' on my wishlist</p><div class="rule"><i></i><b></b><i></i></div>'}
+function draw(){['index','add','data'].forEach(function(t){$('t-'+t).className=(V===t||(V==='detail'&&t==='index'))?'on':''});
+if(V==='index')drawIndex();else if(V==='detail')drawDetail();else if(V==='add')drawForm();else drawData()}
+function btn(t,on,fn){return '<button class="'+(on?'on':'')+'" onclick="'+fn+'">'+t+'</button>'}
+function drawIndex(){
+var h=head();
+if(!S.last)h+='<div class="note">You have not made a backup yet.<button onclick="go(\'data\')">Back up now</button></div>';
+var d=S.stones[Math.floor(Date.now()/864e5)%Math.max(S.stones.length,1)];
+if(d)h+='<div class="card" tabindex="0" onclick="openS(\''+d.id+'\')"><div class="chip" style="background:'+bg(d)+'"></div><div><div class="cap">Stone of the day</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.intents.join(', '))+'</p></div></div>';
+h+='<input id="q" placeholder="Search a stone or a meaning" value="'+esc(F.q)+'" oninput="F.q=this.value;list()" aria-label="Search">';
+h+='<div class="row" style="margin-top:12px">'+btn('All',F.st==='all',"F.st='all';drawIndex()")+btn('Owned',F.st==='own',"F.st='own';drawIndex()")+btn('Want',F.st==='want',"F.st='want';drawIndex()")+'</div>';
+h+='<div class="cap" style="margin:4px 0 6px">I need…</div><div class="scroll">'+INT.map(function(i){return btn(i,F.it===i,"F.it=F.it==='"+i+"'?'':'"+i+"';drawIndex()")}).join('')+'</div>';
+h+='<div class="cap" style="margin:4px 0 6px">Color</div><div class="scroll">'+Object.keys(COL).map(function(c){return '<button class="sw'+(F.co===c?' sel':'')+'" style="background:'+COL[c]+'" aria-label="'+c+'" onclick="F.co=F.co===\''+c+'\'?\'\':\''+c+'\';drawIndex()"></button>'}).join('')+'</div>';
+h+='<div class="row"><select id="so" onchange="F.sort=this.value;list()" aria-label="Sort"><option value="az">Sort: A to Z</option><option value="new">Sort: Recently added</option><option value="color">Sort: Color</option></select><button onclick="F.grid=!F.grid;drawIndex()">'+(F.grid?'List':'Grid')+'</button></div><div id="list"></div>';
+$('app').innerHTML=h;$('so').value=F.sort;list()}
+function list(){
+var q=F.q.toLowerCase(),a=S.stones.filter(function(s){
+if(F.st!=='all'&&s.status!==F.st)return false;if(F.it&&s.intents.indexOf(F.it)<0)return false;if(F.co&&cl(s).indexOf(F.co)<0)return false;
+return !q||(s.name+' '+s.meaning+' '+s.type+' '+s.intents.join(' ')+' '+s.origin).toLowerCase().indexOf(q)>=0});
+if(F.sort==='az')a.sort(function(x,y){return x.name.localeCompare(y.name)});else if(F.sort==='color')a.sort(function(x,y){return x.color.localeCompare(y.color)});else a=a.slice().reverse();
+var h=a.map(function(s){return '<div class="card" tabindex="0" onclick="openS(\''+s.id+'\')">'+chip(s)+'<div><h3>'+esc(s.name)+'</h3><p>'+esc(s.intents.join(', '))+(s.status==='want'?' · wishlist':'')+'</p></div></div>'}).join('');
+if(!a.length)h='<p class="sub">No stones match. Try another color or intention.</p>';
+$('list').innerHTML=F.grid?'<div class="grid">'+h+'</div>':h}
+function openS(id){cur=id;del=null;V='detail';draw();scrollTo(0,0)}
+function find(n){var l=n.toLowerCase();return S.stones.filter(function(s){return s.name.toLowerCase()===l})[0]}
+function drawDetail(){
+var s=S.stones.filter(function(x){return x.id===cur})[0];if(!s){go('index');return}
+var h='<button class="gold" onclick="go(\'index\')">Back</button><div class="hero" style="background:'+bg(s)+';margin-top:14px"></div><div class="cap" style="text-align:center">'+(s.status==='own'?'Owned':'On my wishlist')+'</div><h1 style="font-size:34px">'+esc(s.name)+'</h1><p class="sub">'+esc([s.type,s.origin].filter(Boolean).join(' · '))+'</p><div class="rule"><i></i><b></b><i></i></div>';
+h+=(s.tags&&s.tags.length?'<div style="text-align:center;margin-bottom:6px">'+s.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'</div>':'');
+if(s.hardness||s.luster||s.streak||s.formula)h+='<span class="cap lbl">Properties</span>'+hb(s.hardness)+tiles(s);
+h+='<span class="cap lbl">Colors</span>'+dots(s);
+h+='<span class="cap lbl">Meaning</span><p class="p">'+esc(s.meaning||'Add a meaning in Edit.')+'</p><div>'+s.intents.map(function(i){return '<span class="tag">'+i+'</span>'}).join('')+'</div>';
+if(s.chakra||s.cleanse)h+='<span class="cap lbl">Chakra and cleansing</span><p class="p">'+[s.chakra&&'Chakra: '+esc(s.chakra),s.cleanse&&'Cleansing: '+esc(s.cleanse)].filter(Boolean).join('<br>')+'</p>';
+if(s.pairs.length)h+='<span class="cap lbl">Works well with</span><p class="p">'+s.pairs.map(function(n){var f=find(n);return f?'<a class="l" onclick="openS(\''+f.id+'\')">'+esc(n)+'</a>':esc(n)}).join(', ')+'</p>';
+if(s.status==='want'&&(s.where||s.price||s.size))h+='<span class="cap lbl">Wishlist notes</span><p class="p">'+[s.where&&'Where: '+esc(s.where),s.price&&'Price: '+esc(s.price),s.size&&'Size: '+esc(s.size)].filter(Boolean).join('<br>')+'</p>';
+if(s.note)h+='<span class="cap lbl">My note</span><p class="p" style="font-style:italic;color:var(--soft)">'+esc(s.note)+'</p>';
+h+='<div class="row" style="margin-top:20px">'+btn(s.status==='own'?'Move to wishlist':'Mark as owned',true,'flip()')+btn('Edit',false,'edit()')+'</div><div class="row">'+btn(del?'Tap again to delete':'Delete',false,'rm()')+'</div>';
+$('app').innerHTML=h}
+function flip(){var s=S.stones.filter(function(x){return x.id===cur})[0];s.status=s.status==='own'?'want':'own';sv();draw()}
+function rm(){if(!del){del=1;draw();return}S.stones=S.stones.filter(function(x){return x.id!==cur});sv();go('index')}
+function edit(){editId=cur;V='add';draw();scrollTo(0,0)}
+var FI=[],FC=[];
+function drawForm(){
+var s=editId?S.stones.filter(function(x){return x.id===editId})[0]:{name:'',type:'',color:'purple',status:'own',intents:[],meaning:'',origin:'',pairs:[],note:'',where:'',price:'',size:'',chakra:'',hardness:'',cleanse:''};
+FI=s.intents.slice();FC=cl(s).slice();
+var h=head().replace(/<h1>.*?<\/h1>/,'<h1>'+(editId?'Edit stone':'Add a stone')+'</h1>');
+h+='<span class="cap lbl">Name</span><input id="f-name" style="font-style:normal" value="'+esc(s.name)+'" placeholder="Labradorite" oninput="sg(this.value)" autocomplete="off"><div id="f-sg"></div>';
+h+='<span class="cap lbl">Type or mineral</span><input id="f-type" style="font-style:normal" value="'+esc(s.type)+'" placeholder="Feldspar" list="dl-ty">';
+h+='<span class="cap lbl">Status</span><select id="f-st"><option value="own">Owned</option><option value="want">Want</option></select>';
+h+='<span class="cap lbl">Colors</span><div id="f-cc">'+Object.keys(COL).map(function(c){return '<button type="button" class="'+(FC.indexOf(c)>=0?'on':'')+'" style="margin:0 6px 6px 0;padding:8px 12px" onclick="tc(this,\''+c+'\')">'+cap(c)+'</button>'}).join('')+'</div>';
+h+='<span class="cap lbl">Category tags (comma separated)</span><input id="f-ta" style="font-style:normal" value="'+esc((s.tags||[]).join(', '))+'" placeholder="Gem, Quartz variety">';
+h+='<span class="cap lbl">Luster</span><input id="f-lu" style="font-style:normal" value="'+esc(s.luster)+'" placeholder="Vitreous">';
+h+='<span class="cap lbl">Streak</span><input id="f-sk" style="font-style:normal" value="'+esc(s.streak)+'" placeholder="White">';
+h+='<span class="cap lbl">Formula</span><input id="f-fo" style="font-style:normal" value="'+esc(s.formula)+'" placeholder="SiO2">';
+h+='<span class="cap lbl">Intentions</span><div id="f-in">'+INT.map(function(i){return '<button type="button" class="'+(FI.indexOf(i)>=0?'on':'')+'" style="margin:0 6px 6px 0;padding:8px 12px" onclick="ti(this,\''+i+'\')">'+i+'</button>'}).join('')+'</div>';
+h+='<span class="cap lbl">Meaning</span><textarea id="f-me">'+esc(s.meaning)+'</textarea>';
+h+='<span class="cap lbl">Chakra</span><input id="f-ch" style="font-style:normal" value="'+esc(s.chakra)+'" placeholder="Heart">';
+h+='<span class="cap lbl">Hardness (Mohs scale)</span><input id="f-ha" style="font-style:normal" value="'+esc(s.hardness)+'" placeholder="7">';
+h+='<span class="cap lbl">Cleansing notes</span><input id="f-cl" style="font-style:normal" value="'+esc(s.cleanse)+'" placeholder="Moonlight, smoke">';
+h+='<span class="cap lbl">Origin</span><input id="f-or" style="font-style:normal" value="'+esc(s.origin)+'" placeholder="Brazil" list="dl-or">';
+h+='<span class="cap lbl">Works well with (names, separated by commas)</span><input id="f-pa" style="font-style:normal" value="'+esc(s.pairs.join(', '))+'">';
+h+='<span class="cap lbl">Wishlist: where to buy</span><input id="f-wh" style="font-style:normal" value="'+esc(s.where)+'" list="dl-wh">';
+h+='<div class="row" style="margin-top:12px"><input id="f-pr" style="font-style:normal" placeholder="Price" value="'+esc(s.price)+'"><input id="f-sz" style="font-style:normal" placeholder="Size" value="'+esc(s.size)+'"></div>';
+h+='<span class="cap lbl">My note</span><textarea id="f-no">'+esc(s.note)+'</textarea><p id="f-err" class="p" style="color:#a8433a"></p>';
+h+='<div class="row">'+btn('Save stone',true,'saveS()')+btn('Cancel',false,editId?"openS('"+editId+"')":"go('index')")+'</div>';
+h+=dl('dl-ty','type',['Quartz','Feldspar','Tourmaline','Beryl','Jasper','Agate','Corundum'])+dl('dl-or','origin',['Brazil','Madagascar','Peru','India','Mexico'])+dl('dl-wh','where');
+$('app').innerHTML=h;$('f-st').value=s.status}
+function ti(b,i){var k=FI.indexOf(i);if(k>=0)FI.splice(k,1);else FI.push(i);b.className=k>=0?'':'on'}
+function saveS(){
+var n=$('f-name').value.trim();if(!n){$('f-err').textContent='Enter a name for the stone.';return}
+var o={name:n,type:$('f-type').value.trim(),status:$('f-st').value,color:(FC[0]||'grey'),colors:FC.slice(),tags:$('f-ta').value.split(',').map(function(x){return x.trim()}).filter(Boolean),luster:$('f-lu').value.trim(),streak:$('f-sk').value.trim(),formula:$('f-fo').value.trim(),intents:FI.slice(),meaning:$('f-me').value.trim(),origin:$('f-or').value.trim(),pairs:$('f-pa').value.split(',').map(function(x){return x.trim()}).filter(Boolean),note:$('f-no').value.trim(),where:$('f-wh').value.trim(),chakra:$('f-ch').value.trim(),hardness:$('f-ha').value.trim(),cleanse:$('f-cl').value.trim(),price:$('f-pr').value.trim(),size:$('f-sz').value.trim()};
+if(editId){var s=S.stones.filter(function(x){return x.id===editId})[0];for(var k in o)s[k]=o[k];cur=editId}
+else{o.id='s'+Date.now();S.stones.push(o);cur=o.id}
+sv();editId=null;V='detail';draw();scrollTo(0,0)}
+function drawData(){
+var j=JSON.stringify({app:'stone-journal',stones:S.stones});
+var h=head()+'<div class="note">'+(S.last?'Last backup: '+new Date(S.last).toLocaleDateString():'You have not made a backup yet.')+'</div>';
+h+='<span class="cap lbl">Back up</span><p class="p">Copy this text and keep it somewhere safe, like a note to yourself.</p><textarea id="bk" style="min-height:120px;font-size:12px" readonly>'+esc(j)+'</textarea><div class="row" style="margin-top:10px">'+btn('Copy backup',true,'cp()')+'</div><p class="p" id="cm"></p>';
+h+='<span class="cap lbl">Restore</span><p class="p">Paste a backup here. This replaces the stones on this device.</p><textarea id="rs" style="min-height:90px;font-size:12px"></textarea><div class="row" style="margin-top:10px">'+btn('Restore',false,'rs()')+'</div><p class="p" id="rm"></p>';
+$('app').innerHTML=h}
+function cp(){var t=$('bk');t.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}
+try{if(navigator.clipboard)navigator.clipboard.writeText(t.value)}catch(e){}
+S.last=Date.now();sv();$('cm').textContent='Backup copied. If nothing was copied, select the text and copy it by hand.'}
+function rs(){var m=$('rm');try{var d=JSON.parse($('rs').value);if(!d||!Array.isArray(d.stones))throw 0;S.stones=d.stones;S.init=1;sv();m.textContent=d.stones.length+' stones restored.';setTimeout(function(){go('index')},900)}catch(e){m.textContent='That backup could not be read. Paste the full text and try again.'}}
+draw();
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+</script>
+</body>
+</html>
