@@ -1,7 +1,7 @@
 {
-  "name": "Stone Journal",
-  "short_name": "Stones",
-  "description": "A journal of the stones I own and want, with their meanings.",
+  "name": "Crystal Journal",
+  "short_name": "Crystals",
+  "description": "A journal of the crystals I own and want, with their meanings.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
