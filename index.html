@@ -22,7 +22,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Lato,sans-serif}
 .in{border:1px solid var(--gold);background:var(--paper);padding:22px 20px 26px;border-radius:22px}
 .serif{font-family:Lora,Georgia,serif}
 .cap{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:700}
-.med{width:76px;height:76px;border-radius:50%;border:1px solid var(--gold);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;background:var(--tint)}
+.med{width:88px;height:88px;border-radius:22px;overflow:hidden;border:1px solid var(--gold);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;background:var(--tint)}.med img{width:100%;height:100%;object-fit:cover;display:block}
 h1{font-family:Lora,serif;font-weight:400;font-size:40px;text-align:center;margin:6px 0 0}
 .sub{font-family:Lora,serif;font-style:italic;text-align:center;color:var(--soft);font-size:17px;margin:2px 0 14px}
 .rule{display:flex;align-items:center;gap:12px;margin:0 0 16px}.rule i{flex:1;height:1px;background:var(--gold)}.rule b{width:9px;height:9px;background:var(--gold);transform:rotate(45deg)}
@@ -177,8 +177,9 @@ function pr(){try{history.replaceState({v:V,c:cur,l:LI,e:editId},'')}catch(e){}}
 function bk(v){if(NAV>0)history.back();else go(v)}
 window.addEventListener('popstate',function(e){NAV=Math.max(0,NAV-1);var st=e.state||{v:'index'};V=st.v||'index';cur=st.c||null;LI=st.l==null?null:st.l;editId=st.e||null;del=null;draw();scrollTo(0,0)});
 function go(v){V=v;editId=v==='add'?null:editId;del=null;draw();ps();scrollTo(0,0)}
+var PENT='<svg width="42" height="42" viewBox="0 0 28 28"><polygon points="14,3 24,10 20,24 8,24 4,10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 10 L14 14 L24 10 M14 3 L8 24 M14 14 L20 24" fill="none" stroke="currentColor" stroke-width="1"/></svg>';
 function head(){var w=S.stones.filter(function(s){return s.status==='want'}).length;
-return '<div class="med"><svg width="42" height="42" viewBox="0 0 28 28"><polygon points="14,3 24,10 20,24 8,24 4,10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 10 L14 14 L24 10 M14 3 L8 24 M14 14 L20 24" fill="none" stroke="currentColor" stroke-width="1"/></svg></div><div class="cap" style="text-align:center">Crystal Journal</div><h1>'+S.stones.length+' crystals</h1><p class="sub">'+(S.stones.length-w)+' owned, '+w+' on my wishlist</p><div class="rule"><i></i><b></b><i></i></div>'}
+return '<div class="med"><img src="icon.svg" alt="" onerror="this.outerHTML=PENT"></div><div class="cap" style="text-align:center">Crystal Journal</div><h1>'+S.stones.length+' crystals</h1><p class="sub">'+(S.stones.length-w)+' owned, '+w+' on my wishlist</p><div class="rule"><i></i><b></b><i></i></div>'}
 function draw(){['index','lib','add','data'].forEach(function(t){$('t-'+t).className=(V===t||(V==='detail'&&t==='index')||(V==='libd'&&t==='lib'))?'on':''});
 if(V==='index')drawIndex();else if(V==='detail')drawDetail();else if(V==='lib')drawLib();else if(V==='libd')drawLibD();else if(V==='add')drawForm();else drawData();tr(document.body);document.documentElement.lang=S.lang==='fr'?'fr':'en';$('l-en').className=S.lang==='fr'?'':'on';$('l-fr').className=S.lang==='fr'?'on':''}
 function btn(t,on,fn){return '<button class="'+(on?'on':'')+'" onclick="'+fn+'">'+t+'</button>'}
