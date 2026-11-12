@@ -212,7 +212,7 @@ window.addEventListener('popstate',function(e){NAV=Math.max(0,NAV-1);var st=e.st
 function go(v){V=v;editId=v==='add'?null:editId;del=null;draw();ps();scrollTo(0,0)}
 var PENT='<svg width="42" height="42" viewBox="0 0 28 28"><polygon points="14,3 24,10 20,24 8,24 4,10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 10 L14 14 L24 10 M14 3 L8 24 M14 14 L20 24" fill="none" stroke="currentColor" stroke-width="1"/></svg>';
 function head(){var w=S.stones.filter(function(s){return s.status==='want'}).length;
-return '<div class="med"><img src="icon.svg" alt="" onerror="this.outerHTML=PENT"></div><div class="cap" style="text-align:center">Crystal Journal</div><h1>'+S.stones.length+' crystals</h1><p class="sub">'+(S.stones.length-w)+' owned, '+w+' on my wishlist</p><div class="rule"><i></i><b></b><i></i></div>'}
+return '<div class="cap" style="text-align:center">Crystal Journal</div><h1>'+S.stones.length+' crystals</h1><p class="sub">'+(S.stones.length-w)+' owned, '+w+' on my wishlist</p><div class="rule"><i></i><b></b><i></i></div>'}
 function draw(){['index','lib','add','data'].forEach(function(t){$('t-'+t).className=(V===t||(V==='detail'&&t==='index')||(V==='libd'&&t==='lib'))?'on':''});
 if(V==='index')drawIndex();else if(V==='detail')drawDetail();else if(V==='lib')drawLib();else if(V==='libd')drawLibD();else if(V==='add')drawForm();else drawData();tr(document.body);document.documentElement.lang=S.lang==='fr'?'fr':'en';$('l-en').className=S.lang==='fr'?'':'on';$('l-fr').className=S.lang==='fr'?'on':''}
 function btn(t,on,fn){return '<button class="'+(on?'on':'')+'" onclick="'+fn+'">'+t+'</button>'}
