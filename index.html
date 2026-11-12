@@ -218,7 +218,6 @@ if(V==='index')drawIndex();else if(V==='detail')drawDetail();else if(V==='lib')d
 function btn(t,on,fn){return '<button class="'+(on?'on':'')+'" onclick="'+fn+'">'+t+'</button>'}
 function drawIndex(){
 var h=head();
-if(!S.last&&S.stones.length)h+='<div class="note">You have not made a backup yet.<button onclick="go(\'data\')">Back up now</button></div>';
 var t0=new Date(),d=S.stones[Math.floor((t0.getTime()-t0.getTimezoneOffset()*6e4)/864e5)%Math.max(S.stones.length,1)];
 if(d)h+='<div class="card" tabindex="0" onclick="openS(\''+d.id+'\')">'+chip(d)+'<div><div class="cap">Crystal of the day</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.intents.join(', '))+'</p></div></div>';
 h+='<div class="row" style="margin-top:12px"><input id="q" placeholder="Search a crystal or a meaning" value="'+esc(F.q)+'" oninput="F.q=this.value;list()" aria-label="Search" style="flex:1"><button class="dots'+(F.open?' on':'')+'" onclick="F.open=!F.open;drawIndex()" aria-label="Filters" aria-expanded="'+(!!F.open)+'">\u22ef</button></div>';
