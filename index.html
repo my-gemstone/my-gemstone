@@ -222,11 +222,11 @@ var t0=new Date(),d=S.stones[Math.floor((t0.getTime()-t0.getTimezoneOffset()*6e4
 if(d)h+='<div class="card" tabindex="0" onclick="openS(\''+d.id+'\')">'+chip(d)+'<div><div class="cap">Crystal of the day</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.intents.join(', '))+'</p></div></div>';
 h+='<div class="row" style="margin-top:12px"><input id="q" placeholder="Search a crystal or a meaning" value="'+esc(F.q)+'" oninput="F.q=this.value;list()" aria-label="Search" style="flex:1"><button class="dots'+(F.open?' on':'')+'" onclick="F.open=!F.open;drawIndex()" aria-label="Filters" aria-expanded="'+(!!F.open)+'">\u22ef</button></div>';
 h+='<div class="row">'+btn('All',F.st==='all',"F.st='all';drawIndex()")+btn('Owned',F.st==='own',"F.st='own';drawIndex()")+btn('Want',F.st==='want',"F.st='want';drawIndex()")+'</div>';
-if(S.stones.length)h+='<div class="row">'+btn(F.st==='own'?'Share my collection':F.st==='want'?'Share my wishlist':'Share summary',false,'shList()')+'</div>';
 if(F.it||F.co){h+='<div class="act">';if(F.it)h+='<button class="gold" onclick="F.it=\'\';drawIndex()"><span>'+F.it+'</span> \u00d7</button>';if(F.co)h+='<button class="sw sel" style="background:'+COL[F.co]+'" aria-label="Clear color" onclick="F.co=\'\';drawIndex()"></button>';h+='</div>'}
 if(F.open){h+='<div class="pnl"><div class="cap" style="margin:0 0 8px">I need\u2026</div><div class="wrap">'+INT.map(function(i){return btn(i,F.it===i,"F.it=F.it==='"+i+"'?'':'"+i+"';F.open=false;drawIndex()")}).join('')+'</div><div class="cap" style="margin:14px 0 8px">Color</div><div class="wrap">'+Object.keys(COL).map(function(c){return '<button class="sw'+(F.co===c?' sel':'')+'" style="background:'+COL[c]+'" aria-label="'+c+'" aria-pressed="'+(F.co===c)+'" onclick="F.co=F.co===\''+c+'\'?\'\':\''+c+'\';F.open=false;drawIndex()"></button>'}).join('')+'</div></div>'}
 h+='<div id="list"></div>';
-$('app').innerHTML=h;list();chips($('app'))}
+if(S.stones.length)h+='<div class="row" style="margin-top:18px">'+btn(F.st==='own'?'Share my collection':F.st==='want'?'Share my wishlist':'Share summary',false,'shList()')+'</div>';
+$('app').innerHTML=h;list();chips($('app'));tr($('app'))}
 function list(){
 var a=vis();
 var h=a.map(function(s){return '<div class="card" tabindex="0" onclick="openS(\''+s.id+'\')">'+chip(s)+'<div><h3>'+esc(s.name)+'</h3><p>'+esc(s.intents.join(', '))+(s.status==='want'?' · wishlist':'')+'</p></div></div>'}).join('');
