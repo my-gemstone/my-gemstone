@@ -60,6 +60,8 @@ button.on{background:var(--tint);color:var(--ink);border-color:var(--gold)}butto
 .ql{font:italic 500 19px 'Cormorant Garamond','EB Garamond',Garamond,Georgia,serif;text-transform:none;letter-spacing:.02em;color:var(--soft);background:none;border:none;padding:8px 12px;border-radius:0}
 .qrow{display:flex;justify-content:center;gap:14px;margin:4px 0 6px}
 .cx .cap{font:inherit;letter-spacing:inherit;color:var(--gold);text-transform:none}
+.us{margin:0 auto 6px;padding-left:22px;max-width:30em;font:500 20px/1.5 'Cormorant Garamond','EB Garamond',Garamond,Georgia,serif;color:#3a352e}.us li{margin:0 0 6px}
+.inb{max-width:30em;margin:0 auto 12px;text-align:center}.inr{display:flex;align-items:center;justify-content:center;gap:10px}.inr .tag{margin:0}.inp{width:34px;height:34px;border-radius:50%;border:1px solid var(--gold);background:transparent;color:var(--gold);font:600 22px/1 Lato,sans-serif;padding:0;cursor:pointer}.inn{font:italic 500 19px/1.5 'Cormorant Garamond',Garamond,Georgia,serif;color:var(--soft);margin:8px 6px 0;white-space:pre-wrap}.ine{margin-top:8px}.ine textarea{width:100%;border:1px solid var(--gold);border-radius:14px;background:transparent;padding:10px 12px;font:500 18px/1.4 'Cormorant Garamond',Garamond,Georgia,serif;color:var(--ink);margin-bottom:8px;resize:vertical}
 .det{margin:22px 0 6px;border-top:1px solid var(--gold);padding-top:6px}
 .det summary{cursor:pointer;text-align:center;color:var(--gold);font:700 12px Lato,sans-serif;letter-spacing:.2em;text-transform:uppercase;padding:12px 8px;list-style:none}
 .det summary::-webkit-details-marker{display:none}
@@ -70,7 +72,7 @@ button.on{background:var(--tint);color:var(--ink);border-color:var(--gold)}butto
 .tile{border:1px solid var(--gold);border-radius:16px;padding:10px 12px;background:var(--paper)}.soft{color:var(--soft);font-size:13px}.tile b{font:700 15px Lato,sans-serif;word-break:break-word}.p{font:17px/1.6 Lora,serif;margin:0 0 8px}
 .kv{border:1px solid var(--gold);border-radius:16px;padding:12px 14px;background:var(--paper);margin:0 0 10px}.kv .k{font:700 11px Lato,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:0 0 6px}.kv .v{font:18px/1.45 Lora,serif;color:var(--ink)}
 .gear{position:absolute;top:18px;right:18px;z-index:5;width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--gold);background:var(--paper);border-radius:50%}#set{position:absolute;top:64px;right:18px;z-index:6;background:var(--paper);border:1px solid var(--gold);padding:14px;width:210px;border-radius:18px}#set[hidden]{display:none}
-.pnl{border-radius:18px;background:var(--tint);border:1px solid var(--gold);padding:14px;margin:0 0 14px}.wrap{display:flex;flex-wrap:wrap;gap:8px}.wrap button{padding:8px 12px}.wrap .sw{padding:0}.dots{flex:none;width:50px;height:50px;font-size:22px;line-height:1;padding:0}.act{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.act button{padding:7px 11px}
+.pnl{border-radius:18px;background:var(--tint);border:1px solid var(--gold);padding:14px;margin:0 0 14px}.wrap{display:flex;flex-wrap:wrap;gap:8px}.wrap button{padding:8px 12px}.wrap .sw{padding:0}.dots{flex:none;width:50px;height:50px;font-size:30px;font-weight:700;line-height:1;padding:0}.act{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.act button{padding:7px 11px}
 #q,#lq{border-radius:999px;padding-left:20px}.dots{border-radius:50%}
 a.l{color:var(--gold);cursor:pointer;text-decoration:underline}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.card:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
@@ -219,11 +221,11 @@ var h=head();
 if(!S.last&&S.stones.length)h+='<div class="note">You have not made a backup yet.<button onclick="go(\'data\')">Back up now</button></div>';
 var t0=new Date(),d=S.stones[Math.floor((t0.getTime()-t0.getTimezoneOffset()*6e4)/864e5)%Math.max(S.stones.length,1)];
 if(d)h+='<div class="card" tabindex="0" onclick="openS(\''+d.id+'\')">'+chip(d)+'<div><div class="cap">Crystal of the day</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.intents.join(', '))+'</p></div></div>';
-h+='<div class="row" style="margin-top:12px"><input id="q" placeholder="Search a crystal or a meaning" value="'+esc(F.q)+'" oninput="F.q=this.value;list()" aria-label="Search" style="flex:1"><button class="dots'+(F.open?' on':'')+'" onclick="F.open=!F.open;drawIndex()" aria-label="Filters">\u22ef</button></div>';
+h+='<div class="row" style="margin-top:12px"><input id="q" placeholder="Search a crystal or a meaning" value="'+esc(F.q)+'" oninput="F.q=this.value;list()" aria-label="Search" style="flex:1"><button class="dots'+(F.open?' on':'')+'" onclick="F.open=!F.open;drawIndex()" aria-label="Filters" aria-expanded="'+(!!F.open)+'">\u22ef</button></div>';
 h+='<div class="row">'+btn('All',F.st==='all',"F.st='all';drawIndex()")+btn('Owned',F.st==='own',"F.st='own';drawIndex()")+btn('Want',F.st==='want',"F.st='want';drawIndex()")+'</div>';
 if(S.stones.length)h+='<div class="row">'+btn(F.st==='own'?'Share my collection':F.st==='want'?'Share my wishlist':'Share summary',false,'shList()')+'</div>';
 if(F.it||F.co){h+='<div class="act">';if(F.it)h+='<button class="gold" onclick="F.it=\'\';drawIndex()"><span>'+F.it+'</span> \u00d7</button>';if(F.co)h+='<button class="sw sel" style="background:'+COL[F.co]+'" aria-label="Clear color" onclick="F.co=\'\';drawIndex()"></button>';h+='</div>'}
-if(F.open){h+='<div class="pnl"><div class="cap" style="margin:0 0 8px">I need\u2026</div><div class="wrap">'+INT.map(function(i){return btn(i,F.it===i,"F.it=F.it==='"+i+"'?'':'"+i+"';F.open=false;drawIndex()")}).join('')+'</div><div class="cap" style="margin:14px 0 8px">Color</div><div class="wrap">'+Object.keys(COL).map(function(c){return '<button class="sw'+(F.co===c?' sel':'')+'" style="background:'+COL[c]+'" aria-label="'+c+'" onclick="F.co=F.co===\''+c+'\'?\'\':\''+c+'\';F.open=false;drawIndex()"></button>'}).join('')+'</div></div>'}
+if(F.open){h+='<div class="pnl"><div class="cap" style="margin:0 0 8px">I need\u2026</div><div class="wrap">'+INT.map(function(i){return btn(i,F.it===i,"F.it=F.it==='"+i+"'?'':'"+i+"';F.open=false;drawIndex()")}).join('')+'</div><div class="cap" style="margin:14px 0 8px">Color</div><div class="wrap">'+Object.keys(COL).map(function(c){return '<button class="sw'+(F.co===c?' sel':'')+'" style="background:'+COL[c]+'" aria-label="'+c+'" aria-pressed="'+(F.co===c)+'" onclick="F.co=F.co===\''+c+'\'?\'\':\''+c+'\';F.open=false;drawIndex()"></button>'}).join('')+'</div></div>'}
 h+='<div id="list"></div>';
 $('app').innerHTML=h;list();chips($('app'))}
 function list(){
@@ -247,6 +249,25 @@ var ZEN={"Amethyst": {"meaning": ["Soothes a busy mind and supports restful slee
 function zn(x,k){var z=ZEN[x.name];return z&&z[k]&&x[k]===z[k][0]?z[k][1]:x[k]}
 function sbtn(t,fn,m){return '<button class="sb'+(m?' main':'')+'" onclick="'+fn+'">'+t+'</button>'}
 function qbtn(t,fn){return '<button class="ql" onclick="'+fn+'">'+t+'</button>'}
+var BEN={'Amethyst':['Soothes stress and restless thoughts.','Supports a peaceful sleep.','Encourages clear thinking and meditation.','Reputed to ease tension.']};
+var USE={'Amethyst':['On the bedside table for calmer nights.','Held during meditation.','On the desk to keep calm and focus.','As a pendant or bracelet every day.']};
+var UI={Calm:['On a bedside table or desk for a calmer atmosphere.','Held during meditation or deep breathing.'],Love:['Worn near the heart as a pendant or bracelet.','Placed in a shared space of the home.'],Protection:['In a pocket or bracelet for everyday protection.','Near the entrance of the home.'],Focus:['On your desk while you work or study.','Held for a moment before a task that needs concentration.'],Abundance:['On your desk or near where you plan your finances.'],Courage:['In a pocket before something that makes you nervous.'],Sleep:['On the bedside table for restful nights.'],Healing:['Resting on the chest or belly during a quiet moment of relaxation.']};
+var IN={Calm:'I choose calm.',Love:'I open my heart.',Protection:'I feel safe and protected.',Focus:'I stay focused.',Abundance:'I welcome abundance.',Courage:'I act with courage.',Sleep:'I rest deeply.',Healing:'I let myself heal.'};
+var INX={'Amethyst':['I choose calm.','I let go of the day.','I listen to my intuition.','I rest deeply.']};
+var BI={Calm:'Soothes stress and restless thoughts.',Love:'Opens the heart to warmth and connection.',Protection:'Brings a feeling of safety and grounding.',Focus:'Supports clear thinking and concentration.',Abundance:'Encourages a sense of plenty and gratitude.',Courage:'Lends confidence when facing something new.',Sleep:'Supports a peaceful sleep.',Healing:'Reputed to support general well-being.'};
+function benL(x){if(BEN[x.name])return BEN[x.name];var a=[];(x.intents||[]).forEach(function(i){if(BI[i]&&a.indexOf(BI[i])<0)a.push(BI[i])});return a}
+function useL(x){if(USE[x.name])return USE[x.name];var a=[];(x.intents||[]).forEach(function(i){(UI[i]||[]).forEach(function(u){if(a.indexOf(u)<0&&a.length<4)a.push(u)})});return a}
+function intL(x){return INX[x.name]||(x.intents||[]).map(function(i){return IN[i]}).filter(Boolean)}
+var INK=[],INN={};try{INN=JSON.parse(localStorage.getItem('stonejournal.intn')||'{}')}catch(e){}
+function inSave(){try{localStorage.setItem('stonejournal.intn',JSON.stringify(INN))}catch(e){}}
+function inHtml(i,t){return '<div class="inb"><div class="inr"><span class="tag">'+esc(t)+'</span><button class="inp" id="inp'+i+'" aria-expanded="false" aria-label="'+L('Add a note','Ajouter une note')+'" onclick="inTog('+i+')">+</button></div><p class="inn" id="inn'+i+'"'+(INN[INK[i]]?'':' hidden')+'>'+esc(INN[INK[i]]||'')+'</p><div class="ine" id="ine'+i+'" hidden><textarea id="int'+i+'" rows="3" placeholder="'+L('Write your own words…','Écrivez vos propres mots…')+'"></textarea><button class="sb main" onclick="inOk('+i+')">'+L('Save','Enregistrer')+'</button></div></div>'}
+function inTog(i){var e=$('ine'+i),o=e.hidden;e.hidden=!o;$('inp'+i).setAttribute('aria-expanded',String(o));$('inp'+i).textContent=o?'\u2212':'+';if(o){$('int'+i).value=INN[INK[i]]||'';$('int'+i).focus()}}
+function inOk(i){var v=$('int'+i).value.trim(),n=$('inn'+i);if(v)INN[INK[i]]=v;else delete INN[INK[i]];inSave();n.textContent=v;n.hidden=!v;$('ine'+i).hidden=true;$('inp'+i).setAttribute('aria-expanded','false');$('inp'+i).textContent='+'}
+function extra(x){var o='',u=useL(x),b=benL(x),n=intL(x);
+if(u.length)o+=H('How to use')+'<ul class="us">'+u.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>';
+if(b.length)o+=H('Benefits')+'<ul class="us">'+b.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>';
+if(n.length){INK=[];o+=H('Intentions you can give it')+n.map(function(t,i){INK[i]=x.name+'|'+t;return inHtml(i,t)}).join('')}
+return o}
 function pgBody(x){var h='<h1 class="cn">'+esc(x.name)+'</h1>'+(x.type?'<p class="ts">'+esc(x.type)+'</p>':'')+'<div class="rule"><i></i><b></b><i></i></div>';
 if(x.intents.length)h+='<p class="kw">'+x.intents.map(function(i){return '<span>'+esc(i)+'</span>'}).join(' \u00b7 ')+'</p>';
 var m=[];if(x.hardness)m.push('<span>Hardness</span> '+esc(hdn(x.hardness)));if(x.origin)m.push('<span>'+esc(x.origin)+'</span>');
@@ -258,7 +279,7 @@ if(x.attrs)h+='<p class="fl">'+esc(zn(x,'attrs'))+'</p>';
 if(x.healing)h+='<p class="fl">'+esc(zn(x,'healing'))+'</p>';
 if(x.chakra)h+='<p class="cx"><span class="cap">Chakra</span> \u00b7 <span>'+esc(x.chakra)+'</span></p>';
 if(x.pairs.length)h+='<p class="cx"><span class="cap">Works well with</span> \u00b7 '+x.pairs.map(function(n){var f=find(n);return f?'<a class="l" onclick="openS(\''+f.id+'\')">'+esc(n)+'</a>':'<span>'+esc(n)+'</span>'}).join(', ')+'</p>';
-var d='';if(x.tags&&x.tags.length)d+='<div style="text-align:center;margin-bottom:6px">'+x.tags.map(function(g){return '<span class="tag">'+esc(g)+'</span>'}).join('')+'</div>';
+h+=extra(x);var d='';if(x.tags&&x.tags.length)d+='<div style="text-align:center;margin-bottom:6px">'+x.tags.map(function(g){return '<span class="tag">'+esc(g)+'</span>'}).join('')+'</div>';
 if(x.hardness||x.luster||x.streak||x.formula)d+=H('Properties')+hb(x.hardness)+tiles(x);
 d+=H('Colors')+dots(x);
 if(x.cleanse)d+='<div style="height:14px"></div>'+kvs([['Cleansing',x.cleanse,1]]);
@@ -373,12 +394,12 @@ if(editId){var s=S.stones.filter(function(x){return x.id===editId})[0];for(var k
 else{o.id='s'+Date.now();S.stones.push(o);cur=o.id}
 sv();editId=null;V='detail';pr();draw();scrollTo(0,0)}
 function drawData(){
-var j=JSON.stringify({app:'stone-journal',stones:S.stones});
+var j=JSON.stringify({app:'stone-journal',stones:S.stones,intNotes:INN});
 var h=head()+'<div class="note">'+(S.last?'Last backup: '+new Date(S.last).toLocaleDateString():'You have not made a backup yet.')+'</div>';
 h+='<span class="cap lbl">Back up</span><p class="p">Save your crystals as a file you can keep or send to yourself.</p><div class="row">'+btn('Save file',true,'bf()')+btn('Share',false,'bs()')+'</div><details style="margin-top:10px"><summary class="soft" style="cursor:pointer">Show backup text</summary><textarea id="bk" style="min-height:120px;font-size:12px;margin-top:8px" readonly>'+esc(j)+'</textarea><div class="row" style="margin-top:10px">'+btn('Copy backup',false,'cp()')+'</div></details><p class="p" id="cm"></p>';
 h+='<span class="cap lbl">Restore</span><p class="p">Choose a backup file. This replaces the crystals on this device.</p><div class="row">'+btn('Choose file',false,"$('rf').click()")+'</div><input id="rf" type="file" accept=".json,application/json" style="display:none" onchange="rfile(this)"><details style="margin-top:10px"><summary class="soft" style="cursor:pointer">Paste backup text instead</summary><textarea id="rs" style="min-height:90px;font-size:12px;margin-top:8px"></textarea><div class="row" style="margin-top:10px">'+btn('Restore',false,'rs()')+'</div></details><div class="p" id="rm"></div>';
 $('app').innerHTML=h}
-function bj(){return JSON.stringify({app:'stone-journal',stones:S.stones})}
+function bj(){return JSON.stringify({app:'stone-journal',stones:S.stones,intNotes:INN})}
 function bf(){var m='Backup file ready. If no file appears, open Show backup text and copy it instead.';try{var b=new Blob([bj()],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='crystal-journal-backup.json';document.body.appendChild(a);a.click();a.remove();S.last=Date.now();sv()}catch(e){m='Backup file could not be saved. Open Show backup text and copy it instead.'}$('cm').textContent=m;tr($('cm'))}
 function bs(){var f;try{f=new File([bj()],'crystal-journal-backup.json',{type:'application/json'})}catch(e){}
 if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'Crystal Journal'}).then(function(){S.last=Date.now();sv();$('cm').textContent='Backup shared.';tr($('cm'))}).catch(function(){})}else bf()}
@@ -386,7 +407,7 @@ function rfile(i){var f=i.files&&i.files[0];if(!f)return;var r=new FileReader();
 function cp(){var t=$('bk');t.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}
 try{if(navigator.clipboard)navigator.clipboard.writeText(t.value)}catch(e){}
 S.last=Date.now();sv();$('cm').textContent='Backup copied. If nothing was copied, select the text and copy it by hand.';tr($('cm'))}
-var RP=null;
+var RP=null,RPN=null;
 function nz(s){var o={},k;for(k in s)o[k]=s[k];
 ['name','type','color','meaning','attrs','healing','appear','rarity','origin','note','where','price','size','chakra','hardness','cleanse','luster','streak','formula'].forEach(function(k){o[k]=o[k]==null?'':String(o[k])});
 ['intents','pairs','tags','colors'].forEach(function(k){o[k]=Array.isArray(o[k])?o[k].filter(function(v){return typeof v==='string'}):[]});
@@ -395,14 +416,16 @@ if(!o.id||typeof o.id!=='string')o.id='s'+Date.now()+Math.floor(Math.random()*1e
 if(o.photo&&typeof o.photo!=='string')delete o.photo;return o}
 function rs(){var m=$('rm');try{var d=JSON.parse($('rs').value);if(!d||!Array.isArray(d.stones))throw 0;var sn={},si={};RP=[];
 d.stones.forEach(function(x){if(!x||typeof x!=='object'||typeof x.name!=='string')return;var o=nz(x),k=o.name.trim().toLowerCase();if(!k||sn[k])return;sn[k]=1;while(si[o.id])o.id+='x';si[o.id]=1;RP.push(o)});
-if(!RP.length)throw 0;
+if(!RP.length)throw 0;RPN=(d.intNotes&&typeof d.intNotes==='object')?d.intNotes:null;
 m.innerHTML='<span>This backup has '+RP.length+' crystals. Replace the crystals on this device?</span><div class="row" style="margin-top:10px">'+btn('Replace',true,'rok()')+btn('Cancel',false,'rno()')+'</div>';tr(m)}
 catch(e){RP=null;m.textContent='That backup could not be read. Paste the full text and try again.';tr(m)}}
-function rok(){var m=$('rm'),old=S.stones;if(!RP)return;S.stones=RP;S.init=1;S.stones.forEach(px);if(!sv()){S.stones=old;RP=null;m.textContent='';return}var n=RP.length;RP=null;m.textContent=n+' crystals restored.';tr(m);setTimeout(function(){go('index')},900)}
+function rok(){var m=$('rm'),old=S.stones;if(!RP)return;S.stones=RP;S.init=1;S.stones.forEach(px);if(!sv()){S.stones=old;RP=null;m.textContent='';return}if(RPN){INN=RPN;inSave()}RPN=null;var n=RP.length;RP=null;m.textContent=n+' crystals restored.';tr(m);setTimeout(function(){go('index')},900)}
 function rno(){RP=null;$('rm').textContent=''}
 try{history.replaceState({v:'index'},'')}catch(e){}
 draw();
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+Object.assign(D,{'Save':'Enregistrer',"How to use": "Comment l’utiliser", "Benefits": "Bienfaits", "Intentions you can give it": "Intentions à lui donner", "On the bedside table for calmer nights.": "Sur la table de chevet pour des nuits plus calmes.", "Held during meditation.": "En main pendant la méditation.", "On the desk to keep calm and focus.": "Sur le bureau pour garder le calme et la concentration.", "As a pendant or bracelet every day.": "En pendentif ou en bracelet au quotidien.", "Soothes stress and restless thoughts.": "Apaise le stress et les pensées agitées.", "Supports a peaceful sleep.": "Favorise un sommeil paisible.", "Encourages clear thinking and meditation.": "Encourage la clarté d’esprit et la méditation.", "Reputed to ease tension.": "Réputée soulager les tensions.", "I choose calm.": "Je choisis le calme.", "I let go of the day.": "Je lâche prise sur la journée.", "I listen to my intuition.": "J’écoute mon intuition.", "I rest deeply.": "Je me repose profondément.", "I open my heart.": "J’ouvre mon cœur.", "I feel safe and protected.": "Je me sens en sécurité et protégé(e).", "I stay focused.": "Je reste concentré(e).", "I welcome abundance.": "J’accueille l’abondance.", "I act with courage.": "J’agis avec courage.", "I let myself heal.": "Je me laisse guérir.", "On a bedside table or desk for a calmer atmosphere.": "Sur une table de chevet ou un bureau pour une ambiance plus calme.", "Held during meditation or deep breathing.": "En main pendant la méditation ou la respiration profonde.", "Worn near the heart as a pendant or bracelet.": "Porté près du cœur, en pendentif ou en bracelet.", "Placed in a shared space of the home.": "Posé dans un espace partagé de la maison.", "In a pocket or bracelet for everyday protection.": "En poche ou en bracelet, pour la protection au quotidien.", "Near the entrance of the home.": "Près de l’entrée de la maison.", "On your desk while you work or study.": "Sur votre bureau pendant que vous travaillez ou étudiez.", "Held for a moment before a task that needs concentration.": "En main un instant avant une tâche qui demande de la concentration.", "On your desk or near where you plan your finances.": "Sur votre bureau ou près de l’endroit où vous gérez vos finances.", "In a pocket before something that makes you nervous.": "En poche avant ce qui vous rend nerveux.", "On the bedside table for restful nights.": "Sur la table de chevet pour des nuits reposantes.", "Resting on the chest or belly during a quiet moment of relaxation.": "Posé sur la poitrine ou le ventre lors d’un moment calme de détente."});
+Object.assign(D,{"Opens the heart to warmth and connection.": "Ouvre le cœur à la chaleur et au lien.", "Brings a feeling of safety and grounding.": "Apporte un sentiment de sécurité et d’ancrage.", "Supports clear thinking and concentration.": "Soutient la clarté d’esprit et la concentration.", "Encourages a sense of plenty and gratitude.": "Encourage un sentiment d’abondance et de gratitude.", "Lends confidence when facing something new.": "Donne de l’assurance face à la nouveauté.", "Reputed to support general well-being.": "Réputée soutenir le bien-être général."});
 </script>
 </body>
 </html>
