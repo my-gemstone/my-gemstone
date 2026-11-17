@@ -223,7 +223,7 @@ var h=a.map(function(s){return '<div class="card" tabindex="0" onclick="openS(\'
 if(!a.length)h=S.stones.length?'<p class="sub">No crystals match. Try another color or intention.</p>':'<p class="sub">Your journal is empty.</p>';
 $('list').innerHTML=h;tr($('list'));chips($('list'))}
 
-function lens(){window.open('https://lens.google.com/','_blank','noopener')}
+function lens(){if(/Android/i.test(navigator.userAgent)){location.href='intent://lens#Intent;scheme=googleapp;package=com.google.android.googlequicksearchbox;S.browser_fallback_url='+encodeURIComponent('https://www.google.com/')+';end';return}window.open('https://lens.google.com/','_blank','noopener')}
 function drawLib(){
 var h='<img class="logo" src="'+LOGO+'" alt=""><div class="cap" style="text-align:center">Library</div><h1>'+LB.length+' crystals</h1><p class="sub">Tap a crystal to read and add it</p><div class="rule"><i></i><b></b><i></i></div>';
 h+='<div class="row" style="margin:0"><input id="lq" placeholder="Search the library" value="'+esc(F.lq)+'" oninput="F.lq=this.value;libList()" aria-label="Search" style="flex:1"><button class="dots" onclick="lens()" aria-label="Identify with Google Lens" title="Google Lens"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z\"/><circle cx=\"12\" cy=\"13.5\" r=\"3.5\"/></svg></button></div><div id="ll" style="margin-top:12px"></div>';
