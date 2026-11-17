@@ -263,7 +263,7 @@ var CLM={'Tiger\u2019s eye':[
 ['Moonlight:','Leave the stone outside or on a windowsill overnight under a full moon to cleanse and recharge it gently.','Clair de lune :','Laissez la pierre dehors ou sur un rebord de fenêtre toute la nuit sous la pleine lune pour la purifier et la recharger en douceur.'],
 ['Earth:','Bury the crystal in soil overnight to let the ground absorb stagnant energy, then rinse it clean the next day.','Terre :','Enterrez le cristal dans le sol pendant la nuit pour que la terre absorbe l’énergie stagnante, puis rincez-le le lendemain.'],
 ['Crystal clusters:','Place it on a selenite plate, a clear quartz geode or an amethyst cluster for 24 to 48 hours.','Amas de cristaux :','Posez-le sur une plaque de sélénite, une géode de cristal de roche ou un amas d’améthyste pendant 24 à 48 heures.']]};
-function extra(x){var o='',u=useL(x),b=benL(x),n=intL(x),rich=!!RICH[x.name];
+function extra(x){var o='',u=useL(x),b=benL(x),n=intL(x),rich=true;
 if(!rich&&u.length)o+=H('How to use')+'<ul class="us">'+u.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>';
 if(!rich&&b.length)o+=H('Benefits')+'<ul class="us">'+b.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>';
 var cm=CLM[x.name];if(cm)o+=H('Cleansing')+'<ul class="us">'+cm.map(function(m){var f=S.lang==='fr';return '<li><b>'+esc(f?m[2]:m[0])+'</b> '+esc(f?m[3]:m[1])+'</li>'}).join('')+'</ul>';else if(!rich&&x.cleanse)o+=H('Cleansing')+'<ul class="us"><li data-cz="1">'+esc(x.cleanse)+'</li></ul>';
@@ -272,7 +272,7 @@ return o}
 
 function li(a){return '<ul class="us">'+a.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>'}
 function nt(t){return '<p class="mt" style="margin:16px 0 0">'+esc(t)+'</p>'}
-var RICH={'Amethyst':function(x){return{
+var RICHC={'Amethyst':function(x){return{
 use:{t:L('How to use','Comment l’utiliser'),d:L('Bedside, meditation, desk or jewelry.','Chevet, méditation, bureau ou bijou.'),b:li([
 L('On the bedside table for calmer nights.','Sur la table de chevet pour des nuits plus calmes.'),
 L('Held in your hand during meditation or deep breathing.','Dans la main pendant la méditation ou la respiration profonde.'),
@@ -304,10 +304,68 @@ L('Strong midday sun, which can fade the color.','Le plein soleil de midi, qui p
 prop:{t:L('Properties','Propriétés'),d:L('Hardness','Dureté')+' '+hdn(x.hardness)+(x.formula?' · '+x.formula:''),b:hb(x.hardness)+tiles(x)+((x.tags&&x.tags.length)?'<div style="text-align:center;margin:14px 0 0">'+x.tags.map(function(g){return '<span class="tag">'+esc(g)+'</span>'}).join('')+'</div>':'')+nt(L('Hardness 7 on the Mohs scale: durable enough for everyday jewelry, though a hard knock can still chip it.','Dureté 7 sur l’échelle de Mohs : assez résistante pour les bijoux du quotidien, mais un choc violent peut l’ébrécher.'))+nt(L('Luster is how light reflects (vitreous means glassy). Streak is the color of its powder. The formula SiO2 is silicon dioxide, the same as all quartz.','L’éclat est la façon dont la lumière se reflète (vitreux veut dire comme du verre). La trace est la couleur de sa poudre. La formule SiO2 est le dioxyde de silicium, comme pour tous les quartz.'))},
 col:{t:L('Colors','Couleurs'),d:L('Purple, lilac, white','Violet, lilas, blanc'),b:dots(x)+nt(L('Amethyst ranges from pale lilac to deep violet. The purple comes from iron in the crystal and natural radiation. A deep, even color is the most prized.','L’améthyste va du lilas pâle au violet profond. Le violet vient du fer présent dans le cristal et de la radioactivité naturelle. Une couleur profonde et régulière est la plus recherchée.'))+nt(L('White or colorless areas are common, especially at the base of clusters.','Des zones blanches ou incolores sont fréquentes, surtout à la base des amas.'))+nt(L('Strong sunlight can slowly fade the color, so display it out of direct sun.','Une forte lumière du soleil peut faire pâlir la couleur à la longue : exposez-la à l’abri du soleil direct.'))}
 }}};
-function menu(x){var m=RICH[x.name](x);return '<div style="margin-top:22px">'+['use','ben','clean','charge','prop','col'].map(function(k){var q=m[k];return '<div class="card" role="button" tabindex="0" onclick="openSec(\''+k+'\')"><div style="flex:1;min-width:0"><h3>'+esc(q.t)+'</h3><p>'+esc(q.d)+'</p></div><span style="font:300 30px/1 Lora,serif;color:var(--gold)">›</span></div>'}).join('')+'</div>'}
+
+function hnum(h){var m=String(h||'').match(/[\d.]+/g);return m?parseFloat(m[m.length-1]):0}
+var SPN={'Malachite':['Malachite contains copper: keep it dry, wash your hands after handling raw pieces, and never use it in elixirs or water.','La malachite contient du cuivre : gardez-la au sec, lavez-vous les mains après avoir manipulé des morceaux bruts et ne l’utilisez jamais en élixir ni dans l’eau.'],
+'Selenite':['Selenite is soft and dissolves in water: never wet it, and keep it away from humidity.','La sélénite est tendre et se dissout dans l’eau : ne la mouillez jamais et gardez-la à l’abri de l’humidité.'],
+'Pyrite':['Pyrite can tarnish and smell of sulfur when damp: keep it dry.','La pyrite peut se ternir et sentir le soufre quand elle est humide : gardez-la au sec.'],
+'Turquoise':['Turquoise is porous: avoid water, oils, perfume and sweat when worn as jewelry.','La turquoise est poreuse : évitez l’eau, les huiles, les parfums et la transpiration quand elle est portée en bijou.'],
+'Opal':['Opal contains water: avoid heat, very dry places and sudden changes.','L’opale contient de l’eau : évitez la chaleur, les endroits très secs et les changements brusques.'],
+'Amber':['Amber is light and soft: keep it away from heat, perfume and solvents.','L’ambre est léger et tendre : tenez-le à l’écart de la chaleur, des parfums et des solvants.'],
+'Jet':['Jet is soft and light: avoid water, heat and solvents.','Le jais est tendre et léger : évitez l’eau, la chaleur et les solvants.'],
+'Hematite':['Many polished “hematite” beads can rust if left wet: dry them well.','Beaucoup de perles polies d’« hématite » peuvent rouiller si elles restent mouillées : séchez-les bien.'],
+'Lapis lazuli':['Lapis contains pyrite and calcite: avoid soaking and acids.','Le lapis contient de la pyrite et de la calcite : évitez le trempage et les acides.'],
+'Kunzite':['Kunzite can fade in strong sunlight: store it in the shade.','La kunzite peut pâlir en plein soleil : rangez-la à l’ombre.'],
+'Shungite':['Shungite leaves black marks: handle it away from light fabrics.','La shungite laisse des traces noires : manipulez-la loin des tissus clairs.'],
+'Obsidian':['Broken edges can be sharp: handle with care.','Les bords cassés peuvent être tranchants : manipulez avec soin.'],
+'Snowflake obsidian':['Broken edges can be sharp: handle with care.','Les bords cassés peuvent être tranchants : manipulez avec soin.']};
+function gen(x){
+var c=String(x.cleanse||''),pt=c.split(';'),meth=pt[0].toLowerCase(),av=(pt[1]||'').toLowerCase(),hn=hnum(x.hardness),cm=[],cn=[],ca=[],ch=[],cv=[],sp=SPN[x.name];
+function add(re,nm,en,fr){if(re.test(meth)){cn.push(nm);cm.push(L(en,fr))}}
+add(/smoke/,L('smoke','fumée'),'Smoke: pass it through the smoke of sage, palo santo or incense.','Fumée : passez-la dans la fumée de sauge, de palo santo ou d’encens.');
+add(/moon/,L('moonlight','clair de lune'),'Moonlight: leave it on a windowsill overnight, ideally under the full moon.','Clair de lune : laissez-la sur un rebord de fenêtre toute la nuit, idéalement sous la pleine lune.');
+add(/sound/,L('sound','son'),'Sound: ring a singing bowl or a small bell near it.','Son : faites sonner un bol chantant ou une petite cloche près d’elle.');
+add(/earth/,L('earth','terre'),'Earth: rest it on soil or in a bowl of earth for a few hours.','Terre : posez-la sur de la terre ou dans un bol de terre pendant quelques heures.');
+add(/sun/,L('sunlight','lumière du soleil'),'Sunlight: a short time in gentle morning light.','Lumière du soleil : un court moment dans la douce lumière du matin.');
+add(/water/,L('water','eau'),'Water: rinse it briefly under cool running water, then dry it well.','Eau : rincez-la brièvement à l’eau fraîche courante, puis séchez-la bien.');
+if(!cm.length){cn=[L('smoke','fumée'),L('moonlight','clair de lune')];cm=[L('Smoke: pass it through the smoke of sage, palo santo or incense.','Fumée : passez-la dans la fumée de sauge, de palo santo ou d’encens.'),L('Moonlight: leave it on a windowsill overnight, ideally under the full moon.','Clair de lune : laissez-la sur un rebord de fenêtre toute la nuit, idéalement sous la pleine lune.')]}
+if(x.name!=='Selenite')cm.push(L('Selenite or clear quartz: rest it on a selenite plate or a clear quartz cluster for a few hours.','Sélénite ou cristal de roche : posez-la sur une plaque de sélénite ou un amas de cristal de roche pendant quelques heures.'));
+if(/never water/.test(av))ca.push(L('Water: never wet it.','L’eau : ne la mouillez jamais.'));else if(/water/.test(av))ca.push(L('Soaking in water, which can harm it.','Le trempage dans l’eau, qui peut l’abîmer.'));
+if(/sun|fade/.test(av))ca.push(L('Long direct sun, which can fade the color.','Un soleil direct prolongé, qui peut pâlir la couleur.'));
+if(/heat/.test(av))ca.push(L('Heat and sudden temperature changes.','La chaleur et les changements brusques de température.'));
+if(/perfume/.test(av))ca.push(L('Perfume, oils and sprays.','Les parfums, les huiles et les sprays.'));
+if(/brittle|handle/.test(av))ca.push(L('Hard knocks: it is brittle, so handle it gently.','Les chocs : elle est cassante, manipulez-la avec douceur.'));
+if(hn&&hn<5.5)ca.push(L('Rubbing against harder stones, which can scratch it.','Le frottement contre des pierres plus dures, qui peut la rayer.'));
+ca.push(L('Harsh chemicals and strong cleaners.','Les produits chimiques agressifs et les nettoyants forts.'));
+var cd=cn.join(', ');cd=cd.charAt(0).toUpperCase()+cd.slice(1);
+var ph=(x.intents&&x.intents[0]&&IN[x.intents[0]])?T(IN[x.intents[0]]):'';
+ch.push(L('Moonlight: a night on the windowsill, especially around the full moon.','Clair de lune : une nuit sur le rebord de la fenêtre, surtout autour de la pleine lune.'));
+ch.push(x.name==='Selenite'?L('Clear quartz: rest it beside a clear quartz cluster to recharge.','Cristal de roche : posez-la à côté d’un amas de cristal de roche pour la recharger.'):L('Clear quartz or selenite: place it on or beside a cluster to recharge.','Cristal de roche ou sélénite : posez-la sur ou à côté d’un amas pour la recharger.'));
+ch.push(ph?L('Intention: hold it, breathe slowly and say a short phrase such as “'+ph+'”','Intention : tenez-la, respirez lentement et dites une courte phrase comme « '+ph+' »'):L('Intention: hold it, breathe slowly and set a clear, simple intention.','Intention : tenez-la, respirez lentement et formulez une intention claire et simple.'));
+ch.push(L('Breath or sound: a few slow breaths over the stone, or a singing bowl.','Souffle ou son : quelques respirations lentes sur la pierre, ou un bol chantant.'));
+if(/sun/.test(meth))ch.push(L('Sunlight: a short time of gentle morning light is fine.','Lumière du soleil : un court moment de douce lumière du matin convient.'));
+if(/sun|fade/.test(av))cv.push(L('Strong midday sun, which can fade the color.','Le plein soleil de midi, qui peut pâlir la couleur.'));
+if(hn&&hn<5.5)cv.push(L('Burying it in earth or salt, which can scratch or dull a soft stone.','L’enterrer dans la terre ou le sel, ce qui peut rayer ou ternir une pierre tendre.'));
+var use=useL(x).slice();if(!use.length)use=['On your desk or bedside table.','Held for a quiet moment each day.'];
+if(x.pairs&&x.pairs.length)use.push(L('Paired with '+x.pairs.map(T).join(', ')+', which are said to complement it.','Associée à '+x.pairs.map(T).join(', ')+', réputés pour la compléter.'));
+var ben=benL(x);if(!ben.length)ben=['Reputed to support general well-being.'];
+var hs=hdn(x.hardness),hnote=hn>=7?L('Hardness '+hs+' on the Mohs scale: durable enough for everyday jewelry, though a hard knock can still chip it.','Dureté '+hs+' sur l’échelle de Mohs : assez résistante pour les bijoux du quotidien, mais un choc violent peut l’ébrécher.'):hn>=5?L('Hardness '+hs+' on the Mohs scale: fine for pendants and display, but wear it in rings and bracelets with care.','Dureté '+hs+' sur l’échelle de Mohs : convient aux pendentifs et à l’exposition, mais portez-la avec précaution en bague ou en bracelet.'):hn>0?L('Hardness '+hs+' on the Mohs scale: a soft stone. Protect it from knocks and scratches, and store it apart from harder stones.','Dureté '+hs+' sur l’échelle de Mohs : une pierre tendre. Protégez-la des chocs et des rayures, et rangez-la à part des pierres plus dures.'):'';
+var lnote=(x.luster||x.streak||x.formula)?L('Luster is how light reflects from the surface. Streak is the color of its powder.'+(x.formula?' The formula '+x.formula+' shows what it is made of.':''),'L’éclat est la façon dont la lumière se reflète sur la surface. La trace est la couleur de sa poudre.'+(x.formula?' La formule '+x.formula+' indique de quoi elle est faite.':'')):'';
+var tg=(x.tags&&x.tags.length)?'<div style="text-align:center;margin:14px 0 0">'+x.tags.map(function(g){return '<span class="tag">'+esc(g)+'</span>'}).join('')+'</div>':'';
+var cols=cl(x).map(cap).join(', ');
+var ap=x.appear?nt(zn(x,'appear')):'';
+return{
+use:{t:L('How to use','Comment l’utiliser'),d:L('Placement and everyday use.','Où la placer et comment l’utiliser.'),b:li(use)+nt(L('Place it where you will see it, so it reminds you to pause and breathe.','Posez-la là où vous la verrez, pour qu’elle vous rappelle de faire une pause et de respirer.'))},
+ben:{t:L('Benefits','Bienfaits'),d:(x.intents&&x.intents.length)?x.intents.join(', '):L('Traditionally said to support well-being.','Réputée soutenir le bien-être.'),b:li(ben)+nt(L('These are traditional beliefs, not medical claims. A crystal does not replace care from a health professional.','Ce sont des croyances traditionnelles, pas des affirmations médicales. Un cristal ne remplace pas les soins d’un professionnel de santé.'))},
+clean:{t:L('Cleansing','Purification'),d:cd+'.',b:H(L('Gentle methods','Méthodes douces'))+li(cm)+H(L('Avoid','À éviter'))+li(ca)+H(L('When','Quand'))+li([L('When you first get it, after a heavy or stressful period, or once a month.','Quand vous la recevez, après une période chargée ou stressante, ou une fois par mois.')])+(sp?nt(L(sp[0],sp[1])):'')},
+charge:{t:L('Charging','Recharge'),d:L('Moonlight, intention or a quartz cluster.','Clair de lune, intention ou amas de quartz.'),b:'<p class="fl">'+esc(L('Charging comes after cleansing. It is a way of renewing the stone and giving it a purpose.','La recharge vient après la purification. C’est une façon de renouveler la pierre et de lui donner un but.'))+'</p>'+H(L('Ways to charge','Façons de recharger'))+li(ch)+(cv.length?H(L('Avoid','À éviter'))+li(cv):'')+nt(L('These are practices, not science. Use them if they feel meaningful to you.','Ce sont des pratiques, pas de la science. Utilisez-les si elles ont du sens pour vous.'))},
+prop:{t:L('Properties','Propriétés'),d:(x.hardness?L('Hardness','Dureté')+' '+hs:L('Stone facts','Fiche minérale'))+(x.formula?' · '+x.formula:''),b:hb(x.hardness)+tiles(x)+tg+(hnote?nt(hnote):'')+(lnote?nt(lnote):'')},
+col:{t:L('Colors','Couleurs'),d:cols,b:dots(x)+ap+((/sun|fade/.test(av))?nt(L('Strong sunlight can slowly fade the color, so display it out of direct sun.','Une forte lumière du soleil peut faire pâlir la couleur à la longue : exposez-la à l’abri du soleil direct.')):'')}}}
+function rich(x){return RICHC[x.name]?RICHC[x.name](x):gen(x)}
+function menu(x){var m=rich(x);return '<div style="margin-top:22px">'+['use','ben','clean','charge','prop','col'].map(function(k){var q=m[k];return '<div class="card" role="button" tabindex="0" onclick="openSec(\''+k+'\')"><div style="flex:1;min-width:0"><h3>'+esc(q.t)+'</h3><p>'+esc(q.d)+'</p></div><span style="font:300 30px/1 Lora,serif;color:var(--gold)">›</span></div>'}).join('')+'</div>'}
 function openSec(k){SEC=k;draw();ps();scrollTo(0,0)}
 function secBack(){if(NAV>0)history.back();else{SEC=null;draw()}}
-function secPage(x){var q=RICH[x.name](x)[SEC];if(!q){SEC=null;return ''}
+function secPage(x){var q=rich(x)[SEC];if(!q){SEC=null;return ''}
 return '<button class="gold" onclick="secBack()">← '+L('Back','Retour')+'</button><h1 class="cn" style="margin-top:22px">'+esc(q.t)+'</h1><p class="ts">'+esc(x.name)+'</p><div class="rule"><i></i><b></b><i></i></div>'+q.b}
 function pgBody(x){var h='<h1 class="cn">'+esc(x.name)+'</h1>'+(x.type?'<p class="ts">'+esc(x.type)+'</p>':'')+'<div class="rule"><i></i><b></b><i></i></div>';
 if(x.intents.length)h+='<p class="kw">'+x.intents.map(function(i){return '<span>'+esc(i)+'</span>'}).join(' \u00b7 ')+'</p>';
@@ -320,13 +378,13 @@ if(x.attrs)h+='<p class="fl">'+esc(zn(x,'attrs'))+'</p>';
 if(x.healing)h+='<p class="fl">'+esc(zn(x,'healing'))+'</p>';
 if(x.chakra)h+='<p class="cx"><span class="cap">Chakra</span> \u00b7 <span>'+esc(x.chakra)+'</span></p>';
 if(x.pairs.length)h+='<p class="cx"><span class="cap">Works well with</span> \u00b7 '+x.pairs.map(function(n){var f=find(n);return f?'<a class="l" onclick="openS(\''+f.id+'\')">'+esc(n)+'</a>':'<span>'+esc(n)+'</span>'}).join(', ')+'</p>';
-if(RICH[x.name])h+=menu(x);h+=extra(x);var d='';if(x.tags&&x.tags.length)d+='<div style="text-align:center;margin-bottom:6px">'+x.tags.map(function(g){return '<span class="tag">'+esc(g)+'</span>'}).join('')+'</div>';
+h+=menu(x);h+=extra(x);var d='';if(x.tags&&x.tags.length)d+='<div style="text-align:center;margin-bottom:6px">'+x.tags.map(function(g){return '<span class="tag">'+esc(g)+'</span>'}).join('')+'</div>';
 if(x.hardness||x.luster||x.streak||x.formula)d+=H('Properties')+hb(x.hardness)+tiles(x);
 d+=H('Colors')+dots(x);
-if(RICH[x.name])return h;return h+'<details class="det"><summary>More</summary>'+d+'</details>'}
+return h;return h+'<details class="det"><summary>More</summary>'+d+'</details>'}
 function drawLibD(){
 var x=LB[LI],f=find(x.name);
-if(SEC&&RICH[x.name]){$('app').innerHTML=secPage(x);return}
+if(SEC){$('app').innerHTML=secPage(x);return}
 var h='<button class="gold" onclick="bk(\'lib\')">Back</button>'+hero(f||x,false)+'<div class="cap" style="text-align:center">In library</div>'+pgBody(x);
 h+='<div class="row" style="margin-top:24px">'+sbtn('Add as owned',"addL('own')",1)+sbtn('Add to wishlist',"addL('want')")+'</div><div class="row">'+sbtn('Share card','shCard()')+'</div>';
 $('app').innerHTML=h;loadHero(f||x,null,'libd')}
@@ -335,7 +393,7 @@ function openS(id){cur=id;SEC=null;del=null;V='detail';draw();ps();scrollTo(0,0)
 function find(n){var l=n.toLowerCase();return S.stones.filter(function(s){return s.name.toLowerCase()===l})[0]}
 function drawDetail(){
 var s=S.stones.filter(function(x){return x.id===cur})[0];if(!s){V='index';pr();draw();return}
-if(SEC&&RICH[s.name]){$('app').innerHTML=secPage(s);return}
+if(SEC){$('app').innerHTML=secPage(s);return}
 var h='<button class="gold" onclick="bk(\'index\')">Back</button>'+hero(s,true)+'<div class="cap" style="text-align:center">'+(s.status==='own'?'Owned':'On my wishlist')+'</div>'+pgBody(s);
 if(s.status==='want'&&(s.where||s.price||s.size))h+=H('Wishlist notes')+kvs([['Where',s.where],['Price',s.price],['Size',s.size]]);
 if(s.note)h+=H('My note')+'<p class="p" style="font-style:italic;color:var(--soft)">'+esc(s.note)+'</p>';
