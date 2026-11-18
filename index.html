@@ -450,11 +450,20 @@ var t=n===0?L('Cleansed today','Purifi\u00e9 aujourd\u2019hui'):n===1?L('Cleanse
 return '<p style="text-align:center;margin:8px 0 0"><span class="cc'+(n>=28?' due':'')+'">'+t+'</span></p>'}
 function clSec(s){if(s.status!=='own')return '';if(CLF.sid!==s.id){CLF.sid=s.id;CLF.open=0;CLX=null}
 var l=clog(s),h=H(L('Cleansing log','Journal de purification'));
-if(CLF.open){h+='<div class="pnl"><div class="wrap">'+CM.map(function(m){return btn(m[1]+' '+L(m[2],m[3]),CLF.m===m[0],"clPick('"+m[0]+"')")}).join('')+'</div><div class="cap" style="margin:14px 0 8px">Date</div><input type="date" value="'+(CLF.d||dstr(Date.now()))+'" max="'+dstr(Date.now())+'" oninput="CLF.d=this.value" style="width:100%"><div class="row" style="margin-top:12px">'+btn(L('Save','Enregistrer'),true,'clAdd()')+btn(L('Cancel','Annuler'),false,'clOpen(0)')+'</div></div>'}
-else h+='<div class="row">'+sbtn(L('Log a cleansing','Ajouter une purification'),'clOpen(1)',1)+'</div>';
+if(CLF.open){h+='<div class="pnl"><div class="wrap">'+CM.map(function(m){return btn(m[1]+' '+L(m[2],m[3])+(careMsg(s,m[0])?' \u26A0\uFE0F':''),CLF.m===m[0],"clPick('"+m[0]+"')")}).join('')+'</div>'+careNote(s,CLF.m)+'<div class="cap" style="margin:14px 0 8px">Date</div><input type="date" value="'+(CLF.d||dstr(Date.now()))+'" max="'+dstr(Date.now())+'" oninput="CLF.d=this.value" style="width:100%"><div class="row" style="margin-top:12px">'+btn(careMsg(s,CLF.m)?L('Log anyway','Enregistrer quand m\u00eame'):L('Save','Enregistrer'),true,'clAdd()')+btn(L('Cancel','Annuler'),false,'clOpen(0)')+'</div></div>'}
+else h+='<div class="row">'+sbtn(L('Log a cleansing','Ajouter une purification'),'clOpen(1)',1)+'</div>'+careHint(s);
 h+=l.slice(0,8).map(function(e,i){var m=cmo(e.m)||['','\u2728','Cleansing','Purification'];return '<div class="kv"><div class="k">'+fdate(e.d)+' '+MG[moonOf(e.d)]+'</div><div class="v">'+m[1]+' '+L(m[2],m[3])+' <button class="gold" style="padding:2px 8px;margin-left:8px" onclick="clAsk('+i+')">'+(CLX===i?L('Tap again to delete','Touchez encore pour supprimer'):'\u00d7')+'</button></div></div>'}).join('');
 if(l.length>8)h+='<p class="sub">+'+(l.length-8)+' '+L('earlier','plus anciennes')+'</p>';
 return h}
+function careOf(s){var c=String(s.cleanse||'').toLowerCase(),p=c.indexOf(';'),av=p<0?'':c.slice(p+1),h=String(s.hardness||'').match(/[\d.]+/),lo=h?parseFloat(h[0]):99,w=/never water|jamais/.test(av)?2:/water|eau/.test(av)?1:0;return{w:w,sun:/sun|fade|soleil|p\u00e2li/.test(av),heat:/heat|chaleur/.test(av),salt:w>0||lo<5}}
+function careMsg(s,k){var c=careOf(s);
+if(k==='water'&&c.w===2)return L('Water: traditionally never wetted. It can dissolve or damage this stone.','Eau : traditionnellement jamais mouill\u00e9e. Elle peut dissoudre ou ab\u00eemer cette pierre.');
+if(k==='water'&&c.w===1)return L('Water: traditionally avoided. It can dull or damage this stone.','Eau : traditionnellement \u00e9vit\u00e9e. Elle peut ternir ou ab\u00eemer cette pierre.');
+if(k==='sun'&&(c.sun||c.heat))return L('Sunlight: long direct sun or heat can fade or harm this stone. Keep it brief.','Soleil : un soleil direct prolong\u00e9 ou la chaleur peut p\u00e2lir ou ab\u00eemer cette pierre. Restez bref.');
+if(k==='salt'&&c.salt)return L('Salt: can scratch or pit softer stones, so it is traditionally skipped for this one.','Sel : peut rayer ou piquer les pierres plus tendres, il est donc traditionnellement \u00e9vit\u00e9 pour celle-ci.');
+return ''}
+function careNote(s,k){var m=careMsg(s,k);return m?'<p class="p" style="color:#a8433a;margin:12px 0 0">\u26A0\uFE0F '+m+'</p>':''}
+function careHint(s){var a=[];if(careMsg(s,'water'))a.push(L('water','eau'));if(careMsg(s,'sun'))a.push(L('long sun','soleil prolong\u00e9'));if(careMsg(s,'salt'))a.push(L('salt','sel'));return a.length?'<p class="sub" style="margin:8px 0 0">\u26A0\uFE0F '+L('Traditionally avoided for this stone: ','Traditionnellement \u00e9vit\u00e9 pour cette pierre : ')+a.join(', ')+'</p>':''}
 function clOpen(o){CLF.open=o;CLF.d='';CLX=null;draw()}
 function clPick(k){CLF.m=k;draw()}
 function clCur(){return S.stones.filter(function(x){return x.id===cur})[0]}
