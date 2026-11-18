@@ -32,6 +32,7 @@ select{font-style:normal;font-family:Lato,sans-serif}
 textarea{min-height:76px;font-style:normal}
 button{font:600 19px/1.1 'Cormorant Garamond','EB Garamond',Garamond,Georgia,serif;font-variant:small-caps;letter-spacing:.07em;text-transform:none;color:var(--ink);background:transparent;border:1px solid rgba(169,138,79,.55);padding:11px 16px;border-radius:999px;cursor:pointer}
 button.on{background:var(--tint);color:var(--ink);border-color:var(--gold)}button.gold{border-color:var(--gold)}
+@keyframes swa{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}@keyframes swb{from{opacity:0;transform:translateX(-36px)}to{opacity:1;transform:none}}#app.sw1{animation:swa .22s ease-out}#app.sw2{animation:swb .22s ease-out}@media (prefers-reduced-motion:reduce){#app.sw1,#app.sw2{animation:none}}
 .stack{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}.stack>button{width:100%}.row{display:flex;gap:8px;margin:0 0 12px}.row>*{flex:1}.scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}.scroll button{flex:none;padding:8px 12px}
 .sw{width:30px;height:30px;border-radius:50%;border:2px solid var(--paper);outline:1px solid var(--gold);flex:none;padding:0}.sw.sel{outline:2px solid var(--ink)}
 .note{border-radius:18px;background:var(--tint);border:1px solid var(--gold);padding:14px;margin:0 0 14px;font-family:Lora,serif;font-style:italic;color:var(--soft)}
@@ -240,13 +241,30 @@ if(F.lit||F.lco){h+='<div class="act" style="margin-top:12px">';if(F.lit)h+='<bu
 if(F.lopen){h+='<div class="pnl" style="margin-top:12px"><div class="cap" style="margin:0 0 8px">I need\u2026</div><div class="wrap">'+INT.map(function(i){return btn(i,F.lit===i,"F.lit=F.lit==='"+i+"'?'':'"+i+"';F.lopen=false;drawLib()")}).join('')+'</div><div class="cap" style="margin:14px 0 8px">Color</div><div class="wrap">'+Object.keys(COL).map(function(c){return '<button class="sw'+(F.lco===c?' sel':'')+'" style="background:'+COL[c]+'" aria-label="'+c+'" aria-pressed="'+(F.lco===c)+'" onclick="F.lco=F.lco===\''+c+'\'?\'\':\''+c+'\';F.lopen=false;drawLib()"></button>'}).join('')+'</div></div>'}
 h+='<div id="ll" style="margin-top:12px"></div>';
 $('app').innerHTML=h;libList()}
-function libList(){
+function libOrder(){
 var q=nq(F.lq),a=LB.map(function(x,i){return{x:x,i:i}}).filter(function(o){var x=o.x;if(F.lit&&x.intents.indexOf(F.lit)<0)return false;if(F.lco&&cl(x).indexOf(F.lco)<0)return false;return !q||nq(x.name+' '+(dv(x.name)||'')+' '+x.meaning+' '+x.type+' '+x.intents.join(' ')).indexOf(q)>=0});
 a.sort(function(p,r){return dn(p.x.name).localeCompare(dn(r.x.name))});
+return a}
+function libList(){
+var a=libOrder();
 var h=a.map(function(o){var x=o.x;return '<div class="card" tabindex="0" onclick="openL('+o.i+')">'+chip(find(x.name)||x)+'<div><h3>'+esc(x.name)+'</h3><p>'+esc(x.intents.join(', '))+'</p>'+(find(x.name)?'<p class="cap" style="font-size:10px;margin-top:4px">In journal</p>':'')+'</div></div>'}).join('');
 if(!a.length)h='<p class="sub">No crystals match. Try another color or intention.</p>';
 $('ll').innerHTML=h;tr($('ll'));chips($('ll'))}
 function openL(i){LI=i;SEC=null;V='libd';draw();ps();scrollTo(0,0)}
+/* Swipe left/right (or arrow keys) on a crystal page: next / previous crystal in the list you came from */
+var SW=null;
+function nbr(d){var l,i;
+if(SEC!=null)return;
+if(V==='libd'&&LI!=null){l=libOrder().map(function(o){return o.i});if(l.indexOf(LI)<0)l=LB.map(function(x,k){return k}).sort(function(p,r){return dn(LB[p].name).localeCompare(dn(LB[r].name))});
+if(l.length<2)return;i=l.indexOf(LI);LI=l[(i+d+l.length)%l.length];SEC=null;draw();pr()}
+else if(V==='detail'&&cur){l=vis();if(!l.some(function(x){return x.id===cur}))l=S.stones.slice().sort(function(x,y){return dn(x.name).localeCompare(dn(y.name))});
+if(l.length<2)return;i=0;l.forEach(function(x,k){if(x.id===cur)i=k});cur=l[(i+d+l.length)%l.length].id;SEC=null;del=null;draw();pr()}
+else return;
+scrollTo(0,0);var a=$('app');a.classList.remove('sw1','sw2');void a.offsetWidth;a.classList.add(d>0?'sw1':'sw2')}
+document.addEventListener('touchstart',function(e){var t=e.target;if(e.touches.length!==1||(t.closest&&t.closest('input,textarea,select,.scroll,#lo'))){SW=null;return}SW={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
+document.addEventListener('touchend',function(e){if(!SW)return;var t=e.changedTouches[0],dx=t.clientX-SW.x,dy=t.clientY-SW.y;SW=null;if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.6)return;nbr(dx<0?1:-1)},{passive:true});
+document.addEventListener('keydown',function(e){var g=(e.target&&e.target.tagName)||'';if(/INPUT|TEXTAREA|SELECT/.test(g)||e.altKey||e.ctrlKey||e.metaKey)return;if(e.key==='ArrowLeft')nbr(-1);else if(e.key==='ArrowRight')nbr(1)});
+
 var ZEN={"Amethyst": {"meaning": ["Soothes a busy mind and supports restful sleep and intuition.", "Amethyst is a gentle stone of calm. It softens a busy mind, helps you slow down at the end of the day, and brings a quiet clarity to your intuition."], "appear": ["Purple quartz, from pale lilac to deep violet. Found as crystal points, clusters and geodes.", "Its color drifts from pale lilac to deep violet, and it grows in sparkling clusters, points and hollow geodes."], "attrs": ["A calming stone linked to clear thinking, intuition and spiritual awareness. Often kept near the bed or used in meditation.", "Many people keep it by the bed or hold it while they meditate, as a quiet reminder to breathe and let the day go."], "healing": ["Traditionally used to ease stress and restless thoughts and to support sleep. Some people also use it for tension and headaches.", "It is often chosen when stress and restless thoughts grow loud, to welcome a deeper sleep. Some also hold it when tension gathers."]}};var ZFR={"Amethyst is a gentle stone of calm. It softens a busy mind, helps you slow down at the end of the day, and brings a quiet clarity to your intuition.": "L’améthyste est une pierre douce, faite pour le calme. Elle apaise l’esprit agité, vous aide à ralentir en fin de journée et apporte une clarté tranquille à votre intuition.", "Its color drifts from pale lilac to deep violet, and it grows in sparkling clusters, points and hollow geodes.": "Sa couleur glisse du lilas pâle au violet profond, et elle pousse en amas scintillants, en pointes et en géodes creuses.", "Many people keep it by the bed or hold it while they meditate, as a quiet reminder to breathe and let the day go.": "Beaucoup la gardent près du lit ou la tiennent en méditant, comme un rappel discret de respirer et de laisser la journée s’en aller.", "It is often chosen when stress and restless thoughts grow loud, to welcome a deeper sleep. Some also hold it when tension gathers.": "On la choisit souvent quand le stress et les pensées agitées deviennent bruyants, pour accueillir un sommeil plus profond. Certains la tiennent aussi quand la tension s’installe."};for(var k in ZFR)D[k]=ZFR[k];
 function zn(x,k){var z=ZEN[x.name];return z&&z[k]&&x[k]===z[k][0]?z[k][1]:x[k]}
 function sbtn(t,fn,m){return '<button class="sb'+(m?' main':'')+'" onclick="'+fn+'">'+t+'</button>'}
