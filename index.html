@@ -80,6 +80,7 @@ a.l{color:var(--gold);cursor:pointer;text-decoration:underline}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.card:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .mn{font-size:.8em}
 .cc{display:inline-block;font-size:12px;border:1px solid var(--gold);border-radius:999px;padding:3px 10px;color:var(--soft)}.cc.due{background:var(--tint);color:var(--ink);font-weight:700}
+.cxb{border:1px solid var(--gold);background:var(--tint);border-radius:18px;padding:16px 14px;margin:18px 0;text-align:center}.cxb .cap{font-size:13px}.cxv{font:600 22px/1.4 'Cormorant Garamond','EB Garamond',Garamond,Georgia,serif;font-variant:small-caps;letter-spacing:.1em;color:var(--ink)}.pls{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:8px}.pl{display:inline-block;border:1px solid var(--gold);border-radius:999px;padding:8px 14px;font-size:16px;line-height:1.2;color:var(--ink);background:var(--paper);text-decoration:none}a.pl{color:var(--gold);font-weight:700;cursor:pointer}.pl.off{opacity:.65;border-style:dashed}
 </style>
 </head>
 <body>
@@ -405,8 +406,9 @@ h+='<p class="fl">'+esc(zn(x,'meaning')||'Add a meaning in Edit.')+'</p>';
 if(x.appear)h+='<p class="fl">'+esc(zn(x,'appear'))+'</p>';
 if(x.attrs)h+='<p class="fl">'+esc(zn(x,'attrs'))+'</p>';
 if(x.healing)h+='<p class="fl">'+esc(zn(x,'healing'))+'</p>';
-if(x.chakra)h+='<p class="cx"><span class="cap">Chakra</span> \u00b7 <span>'+esc(x.chakra)+'</span></p>';
-if(x.pairs.length)h+='<p class="cx"><span class="cap">Works well with</span> \u00b7 '+x.pairs.map(function(n){var f=find(n);return f?'<a class="l" onclick="openS(\''+f.id+'\')">'+esc(n)+'</a>':'<span>'+esc(n)+'</span>'}).join(', ')+'</p>';
+var lk=function(n){var f=find(n),b=-1,q=String(n).toLowerCase(),i;if(!f)for(i=0;i<LB.length;i++)if(LB[i].name.toLowerCase()===q){b=i;break}
+return f?'<a class="pl" onclick="openS(\''+f.id+'\')">'+esc(n)+' \u203A</a>':b>=0?'<a class="pl" onclick="openL('+b+')">'+esc(n)+' \u203A</a>':'<span class="pl off">'+esc(n)+'</span>'};
+if(x.chakra||x.pairs.length){h+='<div class="cxb">';if(x.chakra)h+='<div class="cap">Chakra</div><div class="cxv">'+esc(x.chakra)+'</div>';if(x.pairs.length)h+='<div class="cap"'+(x.chakra?' style="margin-top:14px"':'')+'>Works well with</div><div class="pls">'+x.pairs.map(lk).join('')+'</div>';h+='</div>'}
 h+=menu(x);h+=extra(x);var d='';if(x.tags&&x.tags.length)d+='<div style="text-align:center;margin-bottom:6px">'+x.tags.map(function(g){return '<span class="tag">'+esc(g)+'</span>'}).join('')+'</div>';
 if(x.hardness||x.luster||x.streak||x.formula)d+=H('Properties')+hb(x.hardness)+tiles(x);
 d+=H('Colors')+dots(x);
