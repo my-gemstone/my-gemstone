@@ -79,6 +79,7 @@ button.on{background:var(--tint);color:var(--ink);border-color:var(--gold)}butto
 a.l{color:var(--gold);cursor:pointer;text-decoration:underline}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.card:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .mn{font-size:.8em}
+.cc{display:inline-block;font-size:12px;border:1px solid var(--gold);border-radius:999px;padding:3px 10px;color:var(--soft)}.cc.due{background:var(--tint);color:var(--ink);font-weight:700}
 </style>
 </head>
 <body>
@@ -217,7 +218,7 @@ function drawIndex(){
 var h=head();
 var t0=new Date(),d=S.stones[Math.floor((t0.getTime()-t0.getTimezoneOffset()*6e4)/864e5)%Math.max(S.stones.length,1)];
 if(d)h+='<div class="card" tabindex="0" onclick="openS(\''+d.id+'\')">'+chip(d)+'<div><div class="cap">Crystal of the day</div><h3>'+esc(d.name)+'</h3><p>'+esc(d.intents.join(', '))+'</p></div></div>';
-h+=moonToday();h+='<div class="row" style="margin-top:12px"><input id="q" placeholder="Search a crystal or a meaning" value="'+esc(F.q)+'" oninput="F.q=this.value;list()" aria-label="Search" style="flex:1">'+fbtn(F.open,'F.open=!F.open;drawIndex()')+'</div>';
+h+=moonToday()+clDue();h+='<div class="row" style="margin-top:12px"><input id="q" placeholder="Search a crystal or a meaning" value="'+esc(F.q)+'" oninput="F.q=this.value;list()" aria-label="Search" style="flex:1">'+fbtn(F.open,'F.open=!F.open;drawIndex()')+'</div>';
 h+='<div class="row">'+btn('Owned',F.st==='own',"F.st='own';drawIndex()")+btn('Wishlist',F.st==='want',"F.st='want';drawIndex()")+'</div>';
 if(F.it||F.co||F.mo){h+='<div class="act">';if(F.it)h+='<button class="gold" onclick="F.it=\'\';drawIndex()"><span>'+F.it+'</span> \u00d7</button>';if(F.co)h+='<button class="sw sel" style="background:'+COL[F.co]+'" aria-label="Clear color" onclick="F.co=\'\';drawIndex()"></button>';if(F.mo)h+='<button class="gold" onclick="F.mo=\'\';drawIndex()"><span>'+moonLbl(F.mo)+'</span> \u00d7</button>';h+='</div>'}
 if(F.open){h+='<div class="pnl"><div class="cap" style="margin:0 0 8px">I need\u2026</div><div class="wrap">'+INT.map(function(i){return btn(i,F.it===i,"F.it=F.it==='"+i+"'?'':'"+i+"';F.open=false;drawIndex()")}).join('')+'</div><div class="cap" style="margin:14px 0 8px">Color</div><div class="wrap">'+Object.keys(COL).map(function(c){return '<button class="sw'+(F.co===c?' sel':'')+'" style="background:'+COL[c]+'" aria-label="'+c+'" aria-pressed="'+(F.co===c)+'" onclick="F.co=F.co===\''+c+'\'?\'\':\''+c+'\';F.open=false;drawIndex()"></button>'}).join('')+'</div>'+moonPnl()+'</div>'}
@@ -422,10 +423,10 @@ function find(n){var l=n.toLowerCase();return S.stones.filter(function(s){return
 function drawDetail(){
 var s=S.stones.filter(function(x){return x.id===cur})[0];if(!s){V='index';pr();draw();return}
 if(SEC){$('app').innerHTML=secPage(s);return}
-var h='<button class="gold" onclick="bk(\'index\')">Back</button>'+hero(s,true)+'<div class="cap" style="text-align:center">'+(s.status==='own'?'Owned':'On my wishlist')+'</div>'+moonLine(s)+pgBody(s);
+var h='<button class="gold" onclick="bk(\'index\')">Back</button>'+hero(s,true)+'<div class="cap" style="text-align:center">'+(s.status==='own'?'Owned':'On my wishlist')+'</div>'+clChip(s)+pgBody(s);
 if(s.status==='want'&&(s.where||s.price||s.size))h+=H('Wishlist notes')+kvs([['Where',s.where],['Price',s.price],['Size',s.size]]);
 if(s.note)h+=H('My note')+'<p class="p" style="font-style:italic;color:var(--soft)">'+esc(s.note)+'</p>';
-h+='<div class="row" style="margin-top:24px">'+sbtn('Share card','shCard()')+sbtn('Ask Claude','askC()')+'</div><div class="row">'+sbtn(s.status==='own'?'Move to wishlist':'Mark as owned','flip()',1)+'</div><div class="qrow">'+qbtn('Edit','edit()')+qbtn(del?'Tap again to delete':'Delete','rm()')+'</div>';
+h+=clSec(s);h+='<div class="row" style="margin-top:24px">'+sbtn('Share card','shCard()')+sbtn('Ask Claude','askC()')+'</div><div class="row">'+sbtn(s.status==='own'?'Move to wishlist':'Mark as owned','flip()',1)+'</div><div class="qrow">'+qbtn('Edit','edit()')+qbtn(del?'Tap again to delete':'Delete','rm()')+'</div>';
 $('app').innerHTML=h;loadHero(s,s.id,'detail')}
 function flip(){var s=S.stones.filter(function(x){return x.id===cur})[0];s.status=s.status==='own'?'want':'own';sv();draw()}
 function rm(){if(!del){del=1;draw();return}S.stones=S.stones.filter(function(x){return x.id!==cur});sv();bk('index')}
@@ -437,7 +438,32 @@ function addedAt(s){var m=/^s(\d{13})/.exec(s&&s.id||'');return m?+m[1]:0}
 function moonPh(s){var t=addedAt(s);return t?moonOf(t):-1}
 function inGrp(p,k){return p>=0&&MGR[k]&&(k==='new'||k==='full'?p===MGR[k][0]:(k==='wax'?p>=1&&p<=3:p>=5&&p<=7))}
 function mg(s){var p=moonPh(s);return p<0?'':' <span class="mn">'+MG[p]+'</span>'}
-function moonLine(s){var p=moonPh(s);if(p<0)return '';return '<p class="sub" style="text-align:center;margin:6px 0 0">'+MG[p]+' '+L(MEN[p],MFR[p])+' \u00b7 '+L('added ','ajout\u00e9 le ')+fdate(addedAt(s))+'</p>'}
+var CM=[['moon','\u{1F319}','Moonlight','Clair de lune'],['sun','\u2600\uFE0F','Sunlight','Soleil'],['salt','\u{1F9C2}','Salt','Sel'],['sound','\u{1F514}','Sound','Son'],['smoke','\u{1F32B}\uFE0F','Smoke','Fum\u00e9e'],['water','\u{1F4A7}','Water','Eau'],['sel','\u{1F90D}','Selenite','S\u00e9l\u00e9nite'],['earth','\u{1FAA8}','Earth','Terre']],CLF={open:0,m:'moon',d:'',sid:''},CLX=null;
+function cmo(k){for(var i=0;i<CM.length;i++)if(CM[i][0]===k)return CM[i];return null}
+function clog(s){return Array.isArray(s.cl)?s.cl.filter(function(e){return e&&typeof e.d==='number'}).sort(function(a,b){return b.d-a.d}):[]}
+function dayDiff(t){var a=new Date(t),b=new Date();a=new Date(a.getFullYear(),a.getMonth(),a.getDate());b=new Date(b.getFullYear(),b.getMonth(),b.getDate());return Math.round((b-a)/864e5)}
+function lastCl(s){var l=clog(s);return l.length?Math.max(0,dayDiff(l[0].d)):-1}
+function dstr(t){var d=new Date(t);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function clChip(s){if(s.status!=='own')return '';var n=lastCl(s);
+if(n<0)return '<p style="text-align:center;margin:8px 0 0"><span class="cc">'+L('Not cleansed yet','Pas encore purifi\u00e9')+'</span></p>';
+var t=n===0?L('Cleansed today','Purifi\u00e9 aujourd\u2019hui'):n===1?L('Cleansed yesterday','Purifi\u00e9 hier'):L('Cleansed '+n+' days ago','Purifi\u00e9 il y a '+n+' jours');
+return '<p style="text-align:center;margin:8px 0 0"><span class="cc'+(n>=28?' due':'')+'">'+t+'</span></p>'}
+function clSec(s){if(s.status!=='own')return '';if(CLF.sid!==s.id){CLF.sid=s.id;CLF.open=0;CLX=null}
+var l=clog(s),h=H(L('Cleansing log','Journal de purification'));
+if(CLF.open){h+='<div class="pnl"><div class="wrap">'+CM.map(function(m){return btn(m[1]+' '+L(m[2],m[3]),CLF.m===m[0],"clPick('"+m[0]+"')")}).join('')+'</div><div class="cap" style="margin:14px 0 8px">Date</div><input type="date" value="'+(CLF.d||dstr(Date.now()))+'" max="'+dstr(Date.now())+'" oninput="CLF.d=this.value" style="width:100%"><div class="row" style="margin-top:12px">'+btn(L('Save','Enregistrer'),true,'clAdd()')+btn(L('Cancel','Annuler'),false,'clOpen(0)')+'</div></div>'}
+else h+='<div class="row">'+sbtn(L('Log a cleansing','Ajouter une purification'),'clOpen(1)',1)+'</div>';
+h+=l.slice(0,8).map(function(e,i){var m=cmo(e.m)||['','\u2728','Cleansing','Purification'];return '<div class="kv"><div class="k">'+fdate(e.d)+' '+MG[moonOf(e.d)]+'</div><div class="v">'+m[1]+' '+L(m[2],m[3])+' <button class="gold" style="padding:2px 8px;margin-left:8px" onclick="clAsk('+i+')">'+(CLX===i?L('Tap again to delete','Touchez encore pour supprimer'):'\u00d7')+'</button></div></div>'}).join('');
+if(l.length>8)h+='<p class="sub">+'+(l.length-8)+' '+L('earlier','plus anciennes')+'</p>';
+return h}
+function clOpen(o){CLF.open=o;CLF.d='';CLX=null;draw()}
+function clPick(k){CLF.m=k;draw()}
+function clCur(){return S.stones.filter(function(x){return x.id===cur})[0]}
+function clAdd(){var s=clCur();if(!s)return;var p=(CLF.d||dstr(Date.now())).split('-'),t=new Date(+p[0],+p[1]-1,+p[2],12).getTime();
+if(!(t>0)||dayDiff(t)<0){toast(L('Pick a valid date.','Choisissez une date valide.'));return}
+if(!Array.isArray(s.cl))s.cl=[];s.cl.push({d:t,m:CLF.m});sv();CLF.open=0;CLF.d='';CLX=null;draw()}
+function clAsk(i){var s=clCur();if(!s)return;if(CLX!==i){CLX=i;draw();return}var l=clog(s),k=Array.isArray(s.cl)?s.cl.indexOf(l[i]):-1;if(k>=0)s.cl.splice(k,1);CLX=null;sv();draw()}
+function clDue(){var a=S.stones.filter(function(s){return s.status==='own'&&lastCl(s)>=28}).sort(function(x,y){return lastCl(y)-lastCl(x)});if(!a.length)return '';
+return '<div class="pnl" style="margin-top:12px"><div class="cap" style="margin:0 0 8px">'+L('Due for cleansing','\u00c0 purifier')+'</div><div class="wrap">'+a.slice(0,6).map(function(s){return btn(esc(s.name)+' \u00b7 '+lastCl(s)+L('d','j'),false,"openS('"+s.id+"')")}).join('')+'</div></div>'}
 function moonToday(){var p=moonOf(Date.now());return '<p class="sub" style="text-align:center;margin:10px 0 0">'+MG[p]+' '+L('Today: ','Aujourd\u2019hui : ')+L(MEN[p],MFR[p])+'</p>'}
 function moonLbl(k){var g=MGR[k];return MG[g[1]]+' '+L(g[2],g[3])}
 function moonPnl(){return '<div class="cap" style="margin:14px 0 8px">'+L('Moon','Lune')+'</div><div class="wrap">'+['new','wax','full','wan'].map(function(k){return btn(moonLbl(k),F.mo===k,"F.mo=F.mo==='"+k+"'?'':'"+k+"';F.open=false;drawIndex()")}).join('')+'</div>'}
