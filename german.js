@@ -14,10 +14,10 @@ T=function(x){x=String(x==null?'':x);return de()?trs(x):_T(x)};
 hdn=function(h){h=String(h);return de()?h.replace(/(\d)\.(\d)/g,'$1,$2').replace(' to ',' bis '):_hdn(h)};
 cz=function(s){if(!de())return _cz(s);var t=s.toLowerCase();CZG.forEach(function(p){t=t.split(p[0]).join(p[1])});return t.charAt(0).toUpperCase()+t.slice(1)};
 trs=function(c){if(!de())return _trs(c);var m,d=dv(c);if(d)return d;
-if(m=c.match(/^(\d+) crystals$/))return m[1]+' Kristalle';
+if(m=c.match(/^(\d+) crystals?$/))return m[1]+(m[1]==='1'?' Kristall':' Kristalle');
 if(m=c.match(/^(\d+) owned, (\d+) on my wishlist$/))return m[1]+' besessen, '+m[2]+' auf meiner Wunschliste';
-if(m=c.match(/^(\d+) crystals restored\.$/))return m[1]+' Kristalle wiederhergestellt.';
-if(m=c.match(/^This backup has (\d+) crystals\. Replace the crystals on this device\?$/))return 'Diese Sicherung enthält '+m[1]+' Kristalle. Kristalle auf diesem Gerät ersetzen?';
+if(m=c.match(/^(\d+) crystals? restored\.$/))return m[1]==='1'?'1 Kristall wiederhergestellt.':m[1]+' Kristalle wiederhergestellt.';
+if(m=c.match(/^This backup has (\d+) crystals?\. Replace the crystals on this device\?$/))return 'Diese Sicherung enthält '+m[1]+(m[1]==='1'?' Kristall':' Kristalle')+'. Kristalle auf diesem Gerät ersetzen?';
 if(m=c.match(/^(Chakra|Cleansing|Where|Price|Size|Last backup): ([\s\S]*)$/))return (m[1]==='Last backup'?'Letzte Sicherung':DG[m[1]])+': '+(m[1]==='Cleansing'?cz(m[2]):trs(m[2]));
 if(m=c.match(/^(.*) variety$/))return (dv(m[1])||m[1])+'-Varietät';
 if(c.indexOf(', ')>0||c.indexOf(' · ')>0)return c.split(/( · |, )/).map(function(x){return dv(x)||x}).join('');
@@ -54,7 +54,7 @@ function bs(n,k){if(k==='meaning'){var a=SEED.concat(LB);for(var i=0;i<a.length;
 zn=function(x,k){var v=_zn(x,k);if(S.lang!=='fr'&&S.lang!=='de')return v;if(!v||dv(v))return v;var b=bs(x.name,k);if(b&&dv(b)&&nm(v)===nm(b))return b;return v};
 $('l-fr').insertAdjacentHTML('afterend','<button id="l-de" onclick="setL(\'de\')">DE</button>');
 /* German for the new section pages (How to use, Benefits, Cleansing, Charging, Properties, Colors) */
-Object.assign(DG,{
+Object.assign(DG,{'Nothing to restore yet. Choose a file or paste the backup text.':'Noch nichts zum Wiederherstellen. Wähle eine Datei oder füge den Sicherungstext ein.',
 "Bedside, meditation, desk or jewelry.": "Nachttisch, Meditation, Schreibtisch oder Schmuck.",
 "On the bedside table for calmer nights.": "Auf dem Nachttisch für ruhigere Nächte.",
 "Held in your hand during meditation or deep breathing.": "In der Hand während der Meditation oder beim tiefen Atmen.",

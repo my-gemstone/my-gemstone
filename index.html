@@ -32,7 +32,7 @@ select{font-style:normal;font-family:Lato,sans-serif}
 textarea{min-height:76px;font-style:normal}
 button{font:600 19px/1.1 'Cormorant Garamond','EB Garamond',Garamond,Georgia,serif;font-variant:small-caps;letter-spacing:.07em;text-transform:none;color:var(--ink);background:transparent;border:1px solid rgba(169,138,79,.55);padding:11px 16px;border-radius:999px;cursor:pointer}
 button.on{background:var(--tint);color:var(--ink);border-color:var(--gold)}button.gold{border-color:var(--gold)}
-.row{display:flex;gap:8px;margin:0 0 12px}.row>*{flex:1}.scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}.scroll button{flex:none;padding:8px 12px}
+.stack{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}.stack>button{width:100%}.row{display:flex;gap:8px;margin:0 0 12px}.row>*{flex:1}.scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}.scroll button{flex:none;padding:8px 12px}
 .sw{width:30px;height:30px;border-radius:50%;border:2px solid var(--paper);outline:1px solid var(--gold);flex:none;padding:0}.sw.sel{outline:2px solid var(--ink)}
 .note{border-radius:18px;background:var(--tint);border:1px solid var(--gold);padding:14px;margin:0 0 14px;font-family:Lora,serif;font-style:italic;color:var(--soft)}
 .note button{display:block;margin-top:10px;font-style:normal}
@@ -44,7 +44,7 @@ button.on{background:var(--tint);color:var(--ink);border-color:var(--gold)}butto
 .lbl{display:block;margin:14px 0 5px}
 .sec{margin:24px 0 10px}
 .tabs{position:fixed;left:14px;right:14px;bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:4px;background:rgba(249,246,241,.95);border:1px solid rgba(169,138,79,.5);padding:5px;border-radius:999px;box-shadow:0 6px 20px rgba(31,27,22,.10);max-width:432px;margin:0 auto;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.tabs button{flex:1;border:0;background:none;color:var(--soft);padding:12px 0;letter-spacing:.08em;font-size:19px;border-radius:999px}.tabs button.on{color:var(--ink);background:var(--tint);box-shadow:none}
+.tabs button{flex:1 1 0;min-width:0;white-space:nowrap;border:0;background:none;color:var(--soft);padding:12px 0;letter-spacing:.05em;font-size:min(19px,4.1vw);border-radius:999px}.tabs button.on{color:var(--ink);background:var(--tint);box-shadow:none}
 .hero{position:relative;overflow:hidden;height:270px;margin-bottom:14px;border-radius:22px;border:1px solid var(--gold)}
 .gar{font-family:'Cormorant Garamond','EB Garamond',Garamond,'Palatino Linotype',Palatino,Georgia,serif}
 .cn{font-family:'Cormorant Garamond','EB Garamond',Garamond,'Palatino Linotype',Palatino,Georgia,serif;font-weight:500;font-variant:small-caps;letter-spacing:.07em;font-size:40px;line-height:1.1;margin:8px 0 2px}
@@ -172,10 +172,10 @@ function nq(s){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-
 function dn(n){return S.lang==='fr'?(dv(n)||n):n}
 function dv(x){return Object.prototype.hasOwnProperty.call(D,x)?D[x]:Object.prototype.hasOwnProperty.call(M,x)?M[x]:null}
 function trs(c){var m,d=dv(c);if(d)return d;
-if(m=c.match(/^(\d+) crystals$/))return m[1]+' cristaux';
-if(m=c.match(/^(\d+) owned, (\d+) on my wishlist$/))return m[1]+' possédées, '+m[2]+' sur ma liste de souhaits';
-if(m=c.match(/^(\d+) crystals restored\.$/))return m[1]+' cristaux restaurés.';
-if(m=c.match(/^This backup has (\d+) crystals\. Replace the crystals on this device\?$/))return 'Cette sauvegarde contient '+m[1]+' cristaux. Remplacer les cristaux de cet appareil ?';
+if(m=c.match(/^(\d+) crystals?$/))return m[1]+(+m[1]<2?' cristal':' cristaux');
+if(m=c.match(/^(\d+) owned, (\d+) on my wishlist$/))return m[1]+(+m[1]<2?' possédé, ':' possédés, ')+m[2]+' sur ma liste de souhaits';
+if(m=c.match(/^(\d+) crystals? restored\.$/))return +m[1]<2?m[1]+' cristal restauré.':m[1]+' cristaux restaurés.';
+if(m=c.match(/^This backup has (\d+) crystals?\. Replace the crystals on this device\?$/))return 'Cette sauvegarde contient '+m[1]+(+m[1]<2?' cristal':' cristaux')+'. Remplacer les cristaux de cet appareil ?';
 if(m=c.match(/^(Chakra|Cleansing|Where|Price|Size|Last backup): ([\s\S]*)$/))return P[m[1]]+(m[1]==='Cleansing'?cz(m[2]):trs(m[2]));
 if(m=c.match(/^(.*) variety$/))return 'Variété de '+(dv(m[1])||m[1]).toLowerCase();
 if(c.indexOf(', ')>0||c.indexOf(' · ')>0)return c.split(/( · |, )/).map(function(x){return dv(x)||x}).join('');
@@ -202,7 +202,7 @@ window.addEventListener('popstate',function(e){NAV=Math.max(0,NAV-1);var st=e.st
 function go(v){V=v;SEC=null;editId=v==='add'?null:editId;del=null;draw();ps();scrollTo(0,0)}
 var PENT='<svg width="42" height="42" viewBox="0 0 28 28"><polygon points="14,3 24,10 20,24 8,24 4,10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 10 L14 14 L24 10 M14 3 L8 24 M14 14 L20 24" fill="none" stroke="currentColor" stroke-width="1"/></svg>';
 function head(){var w=S.stones.filter(function(s){return s.status==='want'}).length;
-return '<img class="logo" src="'+LOGO+'" alt=""><div class="cap" style="text-align:center">Crystal Journal</div><h1>'+S.stones.length+' crystals</h1><p class="sub">'+(S.stones.length-w)+' owned, '+w+' on my wishlist</p><div class="rule"><i></i><b></b><i></i></div>'}
+return '<img class="logo" src="'+LOGO+'" alt=""><div class="cap" style="text-align:center">Crystal Journal</div><h1>'+S.stones.length+(S.stones.length===1?' crystal':' crystals')+'</h1><p class="sub">'+(S.stones.length-w)+' owned, '+w+' on my wishlist</p><div class="rule"><i></i><b></b><i></i></div>'}
 function draw(){['index','lib','data'].forEach(function(t){$('t-'+t).className=(V===t||(V==='detail'&&t==='index')||(V==='libd'&&t==='lib'))?'on':''});
 if(V==='index')drawIndex();else if(V==='detail')drawDetail();else if(V==='lib')drawLib();else if(V==='libd')drawLibD();else if(V==='add')drawForm();else drawData();tr(document.body);document.documentElement.lang=S.lang==='fr'?'fr':'en';$('l-en').className=S.lang==='fr'?'':'on';$('l-fr').className=S.lang==='fr'?'on':''}
 function btn(t,on,fn){return '<button class="'+(on?'on':'')+'" onclick="'+fn+'">'+t+'</button>'}
@@ -494,39 +494,48 @@ var o={name:n,type:$('f-type').value.trim(),status:$('f-st').value,color:(FC[0]|
 if(editId){var s=S.stones.filter(function(x){return x.id===editId})[0];for(var k in o)s[k]=o[k];cur=editId}
 else{o.id='s'+Date.now();S.stones.push(o);cur=o.id}
 sv();editId=null;V='detail';pr();draw();scrollTo(0,0)}
-function drawData(){
-var j=JSON.stringify({app:'stone-journal',stones:S.stones,intNotes:INN});
-var h=head()+'<div class="note">'+(S.last?'Last backup: '+new Date(S.last).toLocaleDateString():'You have not made a backup yet.')+'</div>';
-h+='<span class="cap lbl">Back up</span><p class="p">Save your crystals as a file you can keep or send to yourself.</p><div class="row">'+btn('Save file',true,'bf()')+btn('Share',false,'bs()')+'</div><details style="margin-top:10px"><summary class="soft" style="cursor:pointer">Show backup text</summary><textarea id="bk" style="min-height:120px;font-size:12px;margin-top:8px" readonly>'+esc(j)+'</textarea><div class="row" style="margin-top:10px">'+btn('Copy backup',false,'cp()')+'</div></details><p class="p" id="cm"></p>';
-h+='<span class="cap lbl">Restore</span><p class="p">Choose a backup file. This replaces the crystals on this device.</p><div class="row">'+btn('Choose file',false,"$('rf').click()")+'</div><input id="rf" type="file" accept=".json,application/json" style="display:none" onchange="rfile(this)"><details style="margin-top:10px"><summary class="soft" style="cursor:pointer">Paste backup text instead</summary><textarea id="rs" style="min-height:90px;font-size:12px;margin-top:8px"></textarea><div class="row" style="margin-top:10px">'+btn('Restore',false,'rs()')+'</div></details><div class="p" id="rm"></div>';
-$('app').innerHTML=h}
+function fdate(t){try{return new Date(t).toLocaleDateString(S.lang==='de'?'de-DE':S.lang==='fr'?'fr-FR':'en-US',{day:'numeric',month:'long',year:'numeric'})}catch(e){return new Date(t).toLocaleDateString()}}
+function lbTxt(){return S.last?'Last backup: '+fdate(S.last):'You have not made a backup yet.'}
+function lbRefresh(){var e=$('lb');if(!e)return;e.textContent=lbTxt();tr(e)}
+function msg(id,t){var e=$(id);if(!e)return;e.textContent=t;tr(e)}
 function bj(){return JSON.stringify({app:'stone-journal',stones:S.stones,intNotes:INN})}
-function bf(){var m='Backup file ready. If no file appears, open Show backup text and copy it instead.';try{var b=new Blob([bj()],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='crystal-journal-backup.json';document.body.appendChild(a);a.click();a.remove();S.last=Date.now();sv()}catch(e){m='Backup file could not be saved. Open Show backup text and copy it instead.'}$('cm').textContent=m;tr($('cm'))}
+function drawData(){
+var h=head()+'<div class="note" id="lb">'+lbTxt()+'</div>';
+h+='<span class="cap lbl">Back up</span><p class="p">Save your crystals as a file you can keep or send to yourself.</p><div class="stack">'+sbtn('Save file','bf()',1)+sbtn('Share','bs()')+'</div><details style="margin-top:10px"><summary class="soft" style="cursor:pointer">Show backup text</summary><textarea id="bk" style="min-height:120px;font-size:12px;margin-top:8px" readonly>'+esc(bj())+'</textarea><div class="stack" style="margin-top:10px">'+sbtn('Copy backup','cp()')+'</div></details><p class="p" id="cm"></p>';
+h+='<span class="cap lbl">Restore</span><p class="p">Choose a backup file. This replaces the crystals on this device.</p><div class="stack">'+sbtn('Choose file',"$('rf').click()",1)+'</div><input id="rf" type="file" style="display:none" onchange="rfile(this)"><details style="margin-top:10px"><summary class="soft" style="cursor:pointer">Paste backup text instead</summary><textarea id="rs" style="min-height:90px;font-size:12px;margin-top:8px"></textarea><div class="stack" style="margin-top:10px">'+sbtn('Restore','rs()')+'</div></details><div class="p" id="rm"></div>';
+$('app').innerHTML=h}
+function bf(){var m='Backup file ready. If no file appears, open Show backup text and copy it instead.';try{var b=new Blob([bj()],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='crystal-journal-backup.json';document.body.appendChild(a);a.click();a.remove();S.last=Date.now();sv();lbRefresh()}catch(e){m='Backup file could not be saved. Open Show backup text and copy it instead.'}msg('cm',m)}
 function bs(){var f;try{f=new File([bj()],'crystal-journal-backup.json',{type:'application/json'})}catch(e){}
-if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'Crystal Journal'}).then(function(){S.last=Date.now();sv();$('cm').textContent='Backup shared.';tr($('cm'))}).catch(function(){})}else bf()}
-function rfile(i){var f=i.files&&i.files[0];if(!f)return;var r=new FileReader();r.onload=function(){$('rs').value=r.result;rs()};r.readAsText(f)}
+if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'Crystal Journal'}).then(function(){S.last=Date.now();sv();lbRefresh();msg('cm','Backup shared.')}).catch(function(){})}else bf()}
+function rfile(i){var f=i.files&&i.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var t=$('rs');if(t)t.value=r.result;i.value='';rs()};r.onerror=function(){i.value='';msg('rm','That backup could not be read. Paste the full text and try again.')};r.readAsText(f)}
 function cp(){var t=$('bk');t.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}
 try{if(navigator.clipboard)navigator.clipboard.writeText(t.value)}catch(e){}
-S.last=Date.now();sv();$('cm').textContent='Backup copied. If nothing was copied, select the text and copy it by hand.';tr($('cm'))}
+S.last=Date.now();sv();lbRefresh();msg('cm','Backup copied. If nothing was copied, select the text and copy it by hand.')}
 var RP=null,RPN=null;
 function nz(s){var o={},k;for(k in s)o[k]=s[k];
+if(typeof o.name!=='string'&&typeof o.title==='string')o.name=o.title;
 ['name','type','color','meaning','attrs','healing','appear','rarity','origin','note','where','price','size','chakra','hardness','cleanse','luster','streak','formula'].forEach(function(k){o[k]=o[k]==null?'':String(o[k])});
 ['intents','pairs','tags','colors'].forEach(function(k){o[k]=Array.isArray(o[k])?o[k].filter(function(v){return typeof v==='string'}):[]});
-o.status=o.status==='own'?'own':'want';if(!COL[o.color])o.color='grey';o.colors=o.colors.filter(function(c){return COL[c]});
+o.status=o.status==='own'||o.status==='owned'?'own':'want';if(!COL[o.color])o.color='grey';o.colors=o.colors.filter(function(c){return COL[c]});
 if(!o.id||typeof o.id!=='string')o.id='s'+Date.now()+Math.floor(Math.random()*1e5);
 if(o.photo&&typeof o.photo!=='string')delete o.photo;return o}
-function rs(){var m=$('rm');try{var d=JSON.parse($('rs').value);if(!d||!Array.isArray(d.stones))throw 0;var sn={},si={};RP=[];
-d.stones.forEach(function(x){if(!x||typeof x!=='object'||typeof x.name!=='string')return;var o=nz(x),k=o.name.trim().toLowerCase();if(!k||sn[k])return;sn[k]=1;while(si[o.id])o.id+='x';si[o.id]=1;RP.push(o)});
+function fst(d,n){if(Array.isArray(d))return d;if(!d||typeof d!=='object'||n>3)return null;var k=['stones','crystals','items','journal','data','collection'],i,v,r;
+for(i=0;i<k.length;i++){v=d[k[i]];if(Array.isArray(v))return v;if(v&&typeof v==='object'){r=fst(v,n+1);if(r)return r}}
+for(i in d){v=d[i];if(Array.isArray(v)&&v.length&&v[0]&&typeof v[0]==='object')return v}return null}
+function rs(){var m=$('rm'),t=($('rs')?$('rs').value:'').replace(/^﻿/,'').trim();
+if(!t){RP=null;msg('rm','Nothing to restore yet. Choose a file or paste the backup text.');return}
+try{var a=t.search(/[\[{]/),z=Math.max(t.lastIndexOf('}'),t.lastIndexOf(']'));if(a<0||z<a)throw 0;var d=JSON.parse(t.slice(a,z+1)),arr=fst(d,0);if(!arr)throw 0;var sn={},si={};RP=[];
+arr.forEach(function(x){if(!x||typeof x!=='object')return;var o=nz(x),k=o.name.trim().toLowerCase();if(!k||sn[k])return;sn[k]=1;while(si[o.id])o.id+='x';si[o.id]=1;RP.push(o)});
 if(!RP.length)throw 0;RPN=(d.intNotes&&typeof d.intNotes==='object')?d.intNotes:null;
-m.innerHTML='<span>This backup has '+RP.length+' crystals. Replace the crystals on this device?</span><div class="row" style="margin-top:10px">'+btn('Replace',true,'rok()')+btn('Cancel',false,'rno()')+'</div>';tr(m)}
-catch(e){RP=null;m.textContent='That backup could not be read. Paste the full text and try again.';tr(m)}}
-function rok(){var m=$('rm'),old=S.stones;if(!RP)return;S.stones=RP;S.init=1;S.stones.forEach(px);if(!sv()){S.stones=old;RP=null;m.textContent='';return}if(RPN){INN=RPN;inSave()}RPN=null;var n=RP.length;RP=null;m.textContent=n+' crystals restored.';tr(m);setTimeout(function(){go('index')},900)}
+m.innerHTML='<span>This backup has '+RP.length+(RP.length===1?' crystal':' crystals')+'. Replace the crystals on this device?</span><div class="stack" style="margin-top:10px">'+sbtn('Replace','rok()',1)+sbtn('Cancel','rno()')+'</div>';tr(m)}
+catch(e){RP=null;msg('rm','That backup could not be read. Paste the full text and try again.')}}
+function rok(){var m=$('rm'),old=S.stones;if(!RP)return;S.stones=RP;S.init=1;S.stones.forEach(px);if(!sv()){S.stones=old;RP=null;m.textContent='';return}if(RPN){INN=RPN;inSave()}RPN=null;var n=RP.length;RP=null;msg('rm',n+(n===1?' crystal restored.':' crystals restored.'));setTimeout(function(){go('index')},900)}
 function rno(){RP=null;$('rm').textContent=''}
 try{history.replaceState({v:'lib'},'')}catch(e){}
 draw();
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
 Object.assign(D,{'Save':'Enregistrer',"How to use": "Comment l’utiliser", "Benefits": "Bienfaits", "Intentions you can give it": "Intentions à lui donner", "On the bedside table for calmer nights.": "Sur la table de chevet pour des nuits plus calmes.", "Held during meditation.": "En main pendant la méditation.", "On the desk to keep calm and focus.": "Sur le bureau pour garder le calme et la concentration.", "As a pendant or bracelet every day.": "En pendentif ou en bracelet au quotidien.", "Soothes stress and restless thoughts.": "Apaise le stress et les pensées agitées.", "Supports a peaceful sleep.": "Favorise un sommeil paisible.", "Encourages clear thinking and meditation.": "Encourage la clarté d’esprit et la méditation.", "Reputed to ease tension.": "Réputée soulager les tensions.", "I choose calm.": "Je choisis le calme.", "I let go of the day.": "Je lâche prise sur la journée.", "I listen to my intuition.": "J’écoute mon intuition.", "I rest deeply.": "Je me repose profondément.", "I open my heart.": "J’ouvre mon cœur.", "I feel safe and protected.": "Je me sens en sécurité et protégé(e).", "I stay focused.": "Je reste concentré(e).", "I welcome abundance.": "J’accueille l’abondance.", "I act with courage.": "J’agis avec courage.", "I let myself heal.": "Je me laisse guérir.", "On a bedside table or desk for a calmer atmosphere.": "Sur une table de chevet ou un bureau pour une ambiance plus calme.", "Held during meditation or deep breathing.": "En main pendant la méditation ou la respiration profonde.", "Worn near the heart as a pendant or bracelet.": "Porté près du cœur, en pendentif ou en bracelet.", "Placed in a shared space of the home.": "Posé dans un espace partagé de la maison.", "In a pocket or bracelet for everyday protection.": "En poche ou en bracelet, pour la protection au quotidien.", "Near the entrance of the home.": "Près de l’entrée de la maison.", "On your desk while you work or study.": "Sur votre bureau pendant que vous travaillez ou étudiez.", "Held for a moment before a task that needs concentration.": "En main un instant avant une tâche qui demande de la concentration.", "On your desk or near where you plan your finances.": "Sur votre bureau ou près de l’endroit où vous gérez vos finances.", "In a pocket before something that makes you nervous.": "En poche avant ce qui vous rend nerveux.", "On the bedside table for restful nights.": "Sur la table de chevet pour des nuits reposantes.", "Resting on the chest or belly during a quiet moment of relaxation.": "Posé sur la poitrine ou le ventre lors d’un moment calme de détente."});
-Object.assign(D,{'Mostly SiO2':'Surtout SiO2','Borosilicate':'Borosilicate'});
+Object.assign(D,{'Mostly SiO2':'Surtout SiO2','Borosilicate':'Borosilicate','Nothing to restore yet. Choose a file or paste the backup text.':'Rien à restaurer pour l’instant. Choisissez un fichier ou collez le texte de sauvegarde.'});
 Object.assign(D,{'On your desk or bedside table.':'Sur votre bureau ou votre table de chevet.','Held for a quiet moment each day.':'Dans la main un court moment chaque jour.'});
 Object.assign(D,{"Opens the heart to warmth and connection.": "Ouvre le cœur à la chaleur et au lien.", "Brings a feeling of safety and grounding.": "Apporte un sentiment de sécurité et d’ancrage.", "Supports clear thinking and concentration.": "Soutient la clarté d’esprit et la concentration.", "Encourages a sense of plenty and gratitude.": "Encourage un sentiment d’abondance et de gratitude.", "Lends confidence when facing something new.": "Donne de l’assurance face à la nouveauté.", "Reputed to support general well-being.": "Réputée soutenir le bien-être général."});
 </script>
