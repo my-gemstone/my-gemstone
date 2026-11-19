@@ -508,7 +508,7 @@ return o.join('\n\n')}
 function shList(){var a=vis();if(!a.length){toast(L('Nothing to share yet.','Rien à partager pour l’instant.'));return}shr(F.st==='want'?L('My crystal wishlist','Ma liste de souhaits de cristaux'):F.st==='own'?L('My crystal collection','Ma collection de cristaux'):L('My crystals','Mes cristaux'),liTxt(a))}
 function wrapT(c,t,w){var ws=String(t).split(/\s+/),l=[],cur='';ws.forEach(function(x){var n=cur?cur+' '+x:x;if(c.measureText(n).width>w&&cur){l.push(cur);cur=x}else cur=n});if(cur)l.push(cur);return l}
 function shCard(f){var s=curS();if(!s)return;var u=s.photo||PI(s.name)||WP[s.name]||'';
-if(u){var im=new Image();im.crossOrigin='anonymous';im.onload=function(){mkCard(s,im,f)};im.onerror=function(){mkCard(s,null,f)};im.src=u}else mkCard(s,null,f)}
+if(u){var im=new Image();im.crossOrigin='anonymous';im.onload=function(){mkCard(s,im,f)};var tried=0;im.onerror=function(){if(!tried&&/^https?:/.test(u)){tried=1;im.src=u+(u.indexOf('?')<0?'?':'&')+'cb='+Date.now()}else mkCard(s,null,f)};im.src=u}else mkCard(s,null,f)}
 function mkCard(s,im,f){var go=function(){try{drawCard(s,im,f)}catch(e){toast(L('Could not make the card.','Impossible de créer la carte.'))}};
 if(document.fonts&&document.fonts.load)Promise.all([document.fonts.load('76px Lora'),document.fonts.load('italic 38px Lora'),document.fonts.load('700 28px Lato')]).then(go,go);else go()}
 function drawCard(s,im,full){var W=1080,H=1350,FB=null,cv=document.createElement('canvas');if(full){FB=fullLay(s);H=FB.H}cv.width=W;cv.height=H;var c=cv.getContext('2d'),G='#a98a4f',INK='#1f1b16',SOFT='#6b6358';
